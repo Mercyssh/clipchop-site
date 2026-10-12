@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClipChop — simple video editing</title>
+  <meta name="description" content="Simple video editing. No layers, no fuss. Cut, speed up, black-box, caption with Whisper on your PC, or let your AI make the first cut. Windows, macOS, Linux.">
+  <meta name="theme-color" content="#0e0e0e">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ClipChop — simple video editing">
+  <meta property="og:description" content="Simple video editing. No layers, no fuss.">
+  <meta property="og:image" content="assets/brag.jpg">
+  <meta property="og:video" content="assets/brag.mp4">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="assets/clipchop-appicon.png">
+  <link rel="preload" href="assets/fonts/InstrumentSans.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Section-tinted colour wash behind everything (colour follows the section in view). -->
+  <div class="ambient" aria-hidden="true"><i></i><i></i></div>
+
+  <header class="topbar" data-topbar>
+    <a class="topbar-brand" href="#top">
+      <img src="assets/clipchop-appicon.png" alt="" width="28" height="28">
+      <span>ClipChop</span>
+    </a>
+    <a class="btn sm" data-dl href="#get">Download</a>
+  </header>
+
+  <main id="main">
+    <!-- 1. Hero -->
+    <section class="hero" id="top" data-seg="#f5f5f5" data-name="Intro">
+      <div class="hero-text">
+        <img class="hero-icon" src="assets/clipchop-appicon.png" alt="" width="96" height="96">
+        <h1 class="wordmark" data-wavy>ClipChop</h1>
+        <p class="tagline">Simple video editing. <span class="dim">No layers, no fuss.</span></p>
+        <div class="dl-block">
+          <a class="btn primary" data-dl data-dl-label href="#get">Download ClipChop</a>
+          <a class="text-link" href="#get">Other platforms</a>
+        </div>
+      </div>
+
+      <div class="hero-video" data-scroll>
+        <div class="video-card">
+          <video id="launch" preload="metadata" poster="assets/brag.jpg" playsinline aria-label="ClipChop launch video">
+            <source src="assets/brag.mp4" type="video/mp4">
+          </video>
+          <button class="play" type="button" data-play aria-label="Play the launch video with sound">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+            <span>Watch the 50-second tour</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2a. Scene: a cut closes the gap -->
+    <section class="scene pin" id="cut" data-scroll="pin" data-seg="#ff5f57" data-name="Cut">
+      <div class="stage">
+        <p class="visually-hidden">Cut the dead air: your clip gets to the point.</p>
+        <p class="kinetic cut-line" aria-hidden="true">Your clip <span class="cutspan"><span class="cut-words">um, so, uh, wait&nbsp;—</span><span class="cut-region"><b>CUT</b></span></span>gets to the point.</p>
+        <p class="scene-sub cut-saved" aria-hidden="true">−4.2 s of dead air, gone.</p>
+      </div>
+    </section>
+
+    <!-- 2b. Scene: timelapse squeezes the slow part -->
+    <section class="scene pin" id="speed" data-scroll="pin" data-seg="#5b8dff" data-name="Timelapse">
+      <div class="stage">
+        <div class="ruler" aria-hidden="true"></div>
+        <p class="visually-hidden">Speed up the slow parts.</p>
+        <p class="kinetic slow-line" aria-hidden="true">This part is sl<span class="o0">o</span><span class="o" style="--i:0">o</span><span class="o" style="--i:1">o</span><span class="o" style="--i:2">o</span><span class="o" style="--i:3">o</span><span class="o" style="--i:4">o</span><span class="o" style="--i:5">o</span><span class="o" style="--i:6">o</span><span class="o" style="--i:7">o</span><span class="o" style="--i:8">o</span><span class="o" style="--i:9">o</span>w.</p>
+        <span class="speed-pill" data-speed aria-hidden="true">1×</span>
+      </div>
+    </section>
+
+    <!-- Feature 1 -->
+    <section class="feature" data-seg="#5b8dff" data-name="Cut &amp; speed" style="--tint:#ff5f57; --tint2:#5b8dff">
+      <div class="feature-text" data-scroll>
+        <h2><span class="c-cut">Cut</span> and <span class="c-speed">speed up</span> in seconds.</h2>
+        <p>Pick a tool, drag over the boring part. Cuts disappear, timelapses play 4×, 8×, whatever you set.</p>
+        <ul class="chips">
+          <li style="--c:#ff5f57">Drag to cut</li>
+          <li style="--c:#5b8dff">Drag to timelapse</li>
+          <li>Resize any edit later</li>
+        </ul>
+      </div>
+      <figure class="loop-card" data-scroll>
+        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/cut-timelapse.jpg" aria-label="Dragging a red cut and a blue 4× timelapse onto the timeline; playback skips the cut and races through the timelapse.">
+          <source src="assets/loops/cut-timelapse.webm" type="video/webm">
+          <source src="assets/loops/cut-timelapse.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </section>
+
+    <!-- 3a. Scene: captions ripple in -->
+    <section class="scene pin" id="captions" data-scroll="pin" data-seg="#8ee6b8" data-name="Captions">
+      <div class="stage">
+        <div class="cap-status" aria-hidden="true">
+          <span data-cap-status>Loading Model</span>
+          <span class="track"><i></i></span>
+          <span class="pct" data-cap-pct>0%</span>
+        </div>
+        <p class="visually-hidden">Transcribed on your PC. Your audio never leaves it.</p>
+        <p class="cap-plate" data-words aria-hidden="true">Transcribed on your PC. Your audio never leaves it.</p>
+        <div class="wave" data-wave aria-hidden="true"><span class="wave-head"></span></div>
+      </div>
+    </section>
+
+    <!-- Feature 2 -->
+    <section class="feature flip" data-seg="#8ee6b8" data-name="Captions" style="--tint:#8ee6b8; --tint2:#28c840">
+      <div class="feature-text" data-scroll>
+        <h2>Captions, transcribed <span class="c-capt">on your PC.</span></h2>
+        <p>Whisper runs locally, so your audio never leaves your machine.</p>
+        <ul class="chips">
+          <li style="--c:#8ee6b8">Models from tiny to large-v3</li>
+          <li style="--c:#28c840">GPU-accelerated on NVIDIA (Windows / Linux), CPU elsewhere</li>
+          <li>Export .srt / .vtt</li>
+        </ul>
+        <p class="fine">A decent graphics card is recommended for the larger models.</p>
+      </div>
+      <figure class="loop-card" data-scroll>
+        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/captions.jpg" aria-label="Clicking Generate captions; the model loads, transcription runs, and captions appear on the timeline.">
+          <source src="assets/loops/captions.webm" type="video/webm">
+          <source src="assets/loops/captions.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </section>
+
+    <!-- 4a. Scene: black-box the private bit, then decorate -->
+    <section class="scene pin" id="frames" data-scroll="pin" data-seg="#febc2e" data-name="Frames">
+      <div class="stage">
+        <p class="visually-hidden">Black-box anything private. Then add a title or a sticker.</p>
+        <div class="redact" aria-hidden="true">
+          <span class="title-pop">Devlog #7: it finally runs</span>
+          <div class="path">
+            <span class="path-text">C:\Users\you\Desktop\secret_build_v3_FINAL\game.exe</span>
+            <span class="frame-box"><i></i><i></i><i></i><i></i></span>
+          </div>
+          <img class="sticker" src="assets/sticker.svg" alt="">
+        </div>
+        <p class="scene-sub" data-frame-sub aria-hidden="true">Black-box anything private.</p>
+      </div>
+    </section>
+
+    <!-- Feature 3 -->
+    <section class="feature" data-seg="#febc2e" data-name="Text &amp; images" style="--tint:#febc2e; --tint2:#ff9d2e">
+      <div class="feature-text" data-scroll>
+        <h2>Text and <span class="c-frame">images.</span></h2>
+        <p>Drop an image onto the preview, or draw a frame and type. Titles, stickers, labels — plus black boxes for anything private.</p>
+        <ul class="chips">
+          <li style="--c:#febc2e">Draw a frame, type</li>
+          <li style="--c:#febc2e">Drag in any image</li>
+          <li>Black boxes for paths, names, keys</li>
+        </ul>
+      </div>
+      <figure class="loop-card" data-scroll>
+        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/text-images.jpg" aria-label="Drawing a black box over a private folder path, then adding a title and dropping a sticker image onto the preview.">
+          <source src="assets/loops/text-images.webm" type="video/webm">
+          <source src="assets/loops/text-images.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </section>
+
+    <!-- 5a. Scene: the AI lands ten edits, then you tweak -->
+    <section class="scene pin tall" id="ai" data-scroll="pin" data-seg="#2df98b" data-name="AI first cut">
+      <div class="stage">
+        <p class="ai-head" data-ai-head>Describe the edit.</p>
+        <div class="ai-prompt" aria-hidden="true">
+          <span class="ai-dot"></span>
+          <span class="ai-typed" data-typed="cut dead air, speed up slow parts, hide private stuff, caption it"></span><span class="caret"></span>
+        </div>
+        <div class="mini-tl" aria-hidden="true">
+          <div class="lane-row"><span class="lbl">Frames</span>
+            <div class="lane">
+              <span class="chip frame title" style="--x:2%;--w:12%;--s:.58">T&nbsp;Devlog #7</span>
+              <span class="chip frame" style="--x:20%;--w:9%;--s:.405"></span>
+              <span class="chip frame tweak-move" style="--x:64%;--w:8%;--s:.545"></span>
+            </div>
+          </div>
+          <div class="lane-row"><span class="lbl">Video</span>
+            <div class="lane video">
+              <span class="chip cut" style="--x:6%;--w:5%;--s:.30">CUT</span>
+              <span class="chip speed" style="--x:15%;--w:12%;--s:.335">4×</span>
+              <span class="chip cut tweak-grow" style="--x:31%;--w:4%;--s:.37">CUT</span>
+              <span class="chip cut" style="--x:44%;--w:6%;--s:.44">CUT</span>
+              <span class="chip speed" style="--x:56%;--w:14%;--s:.475">8×</span>
+              <span class="chip cut" style="--x:80%;--w:5%;--s:.51">CUT</span>
+            </div>
+          </div>
+          <div class="lane-row"><span class="lbl">Captions</span>
+            <div class="lane">
+              <span class="chip capt" style="--x:4%;--w:11%;--s:.62"></span>
+              <span class="chip capt" style="--x:18%;--w:9%;--s:.62"></span>
+              <span class="chip capt" style="--x:30%;--w:12%;--s:.62"></span>
+              <span class="chip capt" style="--x:46%;--w:8%;--s:.62"></span>
+              <span class="chip capt" style="--x:58%;--w:13%;--s:.62"></span>
+              <span class="chip capt" style="--x:76%;--w:10%;--s:.62"></span>
+            </div>
+          </div>
+          <span class="tl-head"></span>
+        </div>
+        <p class="ai-status" data-ai-status aria-hidden="true">Waiting for your AI</p>
+      </div>
+    </section>
+
+    <!-- Feature 4 -->
+    <section class="feature flip" data-seg="#2df98b" data-name="AI first cut" style="--tint:#17d4ea; --tint2:#2df98b">
+      <div class="feature-text" data-scroll>
+        <h2>Let your AI make <span class="c-grad">the first cut.</span></h2>
+        <p>ClipChop works with any MCP client. Describe the edit, and cuts, speed-ups, boxes and captions land on your timeline live. Then fine-tune by hand and render.</p>
+        <ul class="chips">
+          <li style="--c:#2df98b">Every AI edit is a normal edit</li>
+          <li>Undo it, drag it, retime it</li>
+        </ul>
+      </div>
+      <figure class="loop-card" data-scroll>
+        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/mcp-tweak-render.jpg" aria-label="An AI assistant adds cuts, timelapses, black boxes and captions to the timeline; the user stretches a cut, moves a box and renders.">
+          <source src="assets/loops/mcp-tweak-render.webm" type="video/webm">
+          <source src="assets/loops/mcp-tweak-render.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </section>
+
+    <!-- 6a. Scene: render progress driven by scroll -->
+    <section class="scene pin" id="render" data-scroll="pin" data-seg="#f5f5f5" data-name="Render">
+      <div class="stage">
+        <p class="render-pct" aria-hidden="true"><span data-render-pct>0</span>%</p>
+        <div class="render-bar" aria-hidden="true"><i></i></div>
+        <p class="scene-sub" data-render-status aria-hidden="true">Rendering</p>
+      </div>
+    </section>
+
+    <!-- Feature 5 -->
+    <section class="feature" data-seg="#f5f5f5" data-name="Render" style="--tint:#f5f5f5; --tint2:#7d7d7d">
+      <div class="feature-text" data-scroll>
+        <h2>One-click render.</h2>
+        <p>No export maze. ClipChop matches your footage's resolution and frame rate and picks the fastest encoder your PC has.</p>
+        <ul class="chips">
+          <li>MP4 (H.264)</li>
+          <li>Same resolution and frame rate</li>
+          <li>Fastest encoder on your PC</li>
+        </ul>
+      </div>
+      <figure class="loop-card" data-scroll>
+        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/render.jpg" aria-label="Clicking Render; a progress bar fills and the finished MP4 is ready.">
+          <source src="assets/loops/render.webm" type="video/webm">
+          <source src="assets/loops/render.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </section>
+
+    <!-- 3. Personal note (PLACEHOLDER: replace the paragraph and signature) -->
+    <section class="note" id="note" data-seg="#7d7d7d" data-name="A note">
+      <div class="note-inner">
+        <div class="avatar" aria-hidden="true"><img src="assets/clipchop-appicon.png" alt=""></div>
+        <h2>Why I made this.</h2>
+        <p class="reveal" data-scroll data-reveal>[Placeholder — your personal note goes here, 80 to 150 words. Say who you are, why you built ClipChop, and what kind of videos you made with it. Keep it plain and first-person. This paragraph lights up word by word as the visitor scrolls, so short sentences read best.]</p>
+        <p class="sig">— Your name</p>
+      </div>
+    </section>
+
+    <!-- 4. Get ClipChop -->
+    <section class="get" id="get" data-seg="#17d4ea" data-name="Download">
+      <h2 class="get-title" data-scroll><span class="half l">Get Clip</span><span class="half r">Chop.</span></h2>
+      <p class="get-lead">Windows, macOS and Linux. No account needed.</p>
+
+      <div class="platforms">
+        <article class="plat" data-os="windows">
+          <svg class="plat-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5.1 10.4 4v7.1H3zm8.3-1.2L21 2.5v8.6h-9.7zM3 12h7.4v7.1L3 18zm8.3 0H21v8.6l-9.7-1.4z"/></svg>
+          <h3>Windows</h3>
+          <div class="plat-btns">
+            <a class="btn primary" data-asset="windows-exe" href="#">Installer (.exe)</a>
+            <a class="btn" data-asset="windows-msi" href="#">.msi</a>
+          </div>
+          <p class="fine">Ready on Windows 11. On Windows 10, install Microsoft WebView2 first.</p>
+        </article>
+        <article class="plat" data-os="mac">
+          <svg class="plat-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.5 2-3.7 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9s-2-.9-3.3-.8a4.9 4.9 0 0 0-4.1 2.5c-1.8 3.1-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.2 0 1.7-.8 3.2-.8s1.9.8 3.2.8c1.3 0 2.2-1.2 3-2.4a10 10 0 0 0 1.4-2.8 4.3 4.3 0 0 1-2.5-4.3zM14 5.2A4.3 4.3 0 0 0 15 2a4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3.1A3.6 3.6 0 0 0 14 5.2z"/></svg>
+          <h3>macOS</h3>
+          <div class="plat-btns">
+            <a class="btn primary" data-asset="mac-dmg" href="#">Disk image (.dmg)</a>
+          </div>
+          <p class="fine">First launch: right-click the app and choose Open.</p>
+        </article>
+        <article class="plat" data-os="linux">
+          <svg class="plat-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2c-2.2 0-3.6 1.9-3.6 4.6 0 1.3.3 2.2-.4 3.4-.9 1.5-2.7 3.6-2.9 6.2-.1 1.1.2 2 .7 2.6-.7.4-1.6.6-1.7 1.4-.1 1 1.6 1.2 3.3 1.7 1.2.3 2-.1 2.6-.6.6.2 1.3.3 2 .3s1.4-.1 2-.3c.6.5 1.4.9 2.6.6 1.7-.5 3.4-.7 3.3-1.7-.1-.8-1-1-1.7-1.4.5-.6.8-1.5.7-2.6-.2-2.6-2-4.7-2.9-6.2-.7-1.2-.4-2.1-.4-3.4C15.6 3.9 14.2 2 12 2zm-1.5 4.1c.4 0 .7.5.7 1.1s-.3 1.1-.7 1.1-.7-.5-.7-1.1.3-1.1.7-1.1zm3 0c.4 0 .7.5.7 1.1s-.3 1.1-.7 1.1-.7-.5-.7-1.1.3-1.1.7-1.1zM12 9c.9 0 1.9.6 1.9 1s-1 1-1.9 1-1.9-.6-1.9-1S11.1 9 12 9z"/></svg>
+          <h3>Linux</h3>
+          <div class="plat-btns">
+            <a class="btn primary" data-asset="linux-appimage" href="#">.AppImage</a>
+            <a class="btn" data-asset="linux-deb" href="#">.deb</a>
+            <a class="btn" data-asset="linux-rpm" href="#">.rpm</a>
+          </div>
+          <p class="fine">Built on Ubuntu 22.04.</p>
+        </article>
+      </div>
+
+      <!-- Pricing slot: add a card here once pricing is decided, e.g.
+      <div class="price-card"><h3>Free while in early access</h3><p>…</p></div> -->
+    </section>
+  </main>
+
+  <footer class="footer">
+    <img src="assets/clipchop-appicon.png" alt="" width="24" height="24">
+    <span>© <span data-year>2026</span> ClipChop</span>
+    <span class="sp"></span>
+    <a href="licenses.html">Third-party notices</a>
+    <a href="mailto:hello@example.com">Contact</a>
+  </footer>
+
+  <!-- The page as a timeline: one coloured region per section, playhead = scroll. -->
+  <nav class="scrubber" data-scrubber aria-label="Page sections">
+    <span class="tc" data-tc>00:00:00</span>
+    <div class="scrub-track" data-scrub-track><span class="scrub-head" data-scrub-head></span></div>
+    <span class="tc dim">00:53:21</span>
+  </nav>
+
+  <script src="main.js"></script>
+</body>
+</html>
