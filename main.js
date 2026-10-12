@@ -280,13 +280,113 @@
     loops.forEach((v) => io.observe(v));
   }
 
-  // ---- Launch video: poster first, click to play with sound ---------------
+  // ---- Launch video: click to play in focus ------------------------------
+  // The card flies from its spot in the hero to the centre of the screen over
+  // a dimmed backdrop (page scroll locked). Clicking the backdrop or pressing
+  // Esc flies it back and pauses. The card is moved to <body> while focused,
+  // because the hero's perspective/transforms would trap position: fixed.
   const launch = document.getElementById("launch");
   const playBtn = document.querySelector("[data-play]");
-  playBtn.addEventListener("click", () => {
+  const card = launch.closest(".video-card");
+  const FLY = { duration: reduced ? 0 : 650, easing: "cubic-bezier(0.32, 0.72, 0, 1)" };
+
+  const scrim = document.createElement("div");
+  scrim.className = "video-scrim";
+  scrim.setAttribute("aria-hidden", "true");
+  document.body.append(scrim);
+
+  const placeholder = document.createElement("div");
+  placeholder.className = "video-card video-ph";
+  placeholder.setAttribute("aria-hidden", "true");
+
+  let focused = false;
+  let busy = false;
+
+  function targetRect() {
+    const vw = document.documentElement.clientWidth;
+    const vh = innerHeight;
+    const w = Math.min(vw * 0.9, vh * 0.86 * (16 / 9), 1600);
+    const h = w * (9 / 16);
+    return { left: (vw - w) / 2, top: (vh - h) / 2, width: w, height: h };
+  }
+
+  function placeFixed(r) {
+    Object.assign(card.style, {
+      left: r.left + "px",
+      top: r.top + "px",
+      width: r.width + "px",
+      height: r.height + "px",
+    });
+  }
+
+  // Animate from rect `from` to the card's current fixed geometry `to`.
+  function fly(from, to) {
+    const s = from.width / to.width;
+    const dx = from.left - to.left;
+    const dy = from.top - to.top;
+    const anim = card.animate(
+      [{ transform: `translate(${dx}px, ${dy}px) scale(${s})` }, { transform: "none" }],
+      FLY,
+    );
+    // `finished` can stall when the page isn't painting (background tab), so
+    // never wait on it longer than the animation itself.
+    const timeout = new Promise((r) => setTimeout(r, FLY.duration + 120));
+    return Promise.race([anim.finished.catch(() => {}), timeout]).then(() => anim.finish());
+  }
+
+  function lockScroll(on) {
+    const gap = innerWidth - document.documentElement.clientWidth;
+    document.documentElement.classList.toggle("scroll-locked", on);
+    document.body.style.paddingRight = on && gap > 0 ? gap + "px" : "";
+  }
+
+  async function openVideo() {
+    if (focused || busy) return;
+    busy = true;
+    const from = card.getBoundingClientRect();
+    card.replaceWith(placeholder);
+    document.body.append(card);
+    card.classList.add("focus");
+    const to = targetRect();
+    placeFixed(to);
+    lockScroll(true);
+    scrim.classList.add("on");
+    playBtn.classList.add("hidden");
     launch.muted = false;
     launch.controls = true;
-    playBtn.classList.add("hidden");
     launch.play().catch(() => {});
+    focused = true;
+    await fly(from, to);
+    launch.focus({ preventScroll: true });
+    busy = false;
+  }
+
+  async function closeVideo() {
+    if (!focused || busy) return;
+    busy = true;
+    launch.pause();
+    launch.controls = false;
+    scrim.classList.remove("on");
+    const from = card.getBoundingClientRect();
+    const to = placeholder.getBoundingClientRect();
+    placeFixed(to);
+    await fly(from, to);
+    card.classList.remove("focus");
+    card.removeAttribute("style");
+    placeholder.replaceWith(card);
+    lockScroll(false);
+    playBtn.classList.remove("hidden");
+    playBtn.focus({ preventScroll: true });
+    focused = false;
+    busy = false;
+  }
+
+  playBtn.addEventListener("click", openVideo);
+  scrim.addEventListener("click", closeVideo);
+  addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeVideo();
+  });
+  addEventListener("resize", () => {
+    if (focused && !busy) placeFixed(targetRect());
   });
 })();

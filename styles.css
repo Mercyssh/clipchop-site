@@ -54,7 +54,7 @@
   --fs-2: 18px;
   --fs-3: 26px;
   --fs-4: 52px;
-  --fs-5: 112px;
+  --fs-5: 96px;
 
   --gutter: 32px;
   --max: 1200px;
@@ -279,6 +279,10 @@ a {
 /* The app's wavy letter effect (src/app.css .wavy-char). */
 .wavy-char {
   display: inline-block;
+  /* Room for glyph overhang (tight tracking pushes the last "p" past its box,
+     and background-clip: text would crop it). */
+  padding: 0 0.1em 0.12em;
+  margin: 0 -0.1em -0.12em;
   background-clip: text;
   animation: wavy 4.2s ease-in-out infinite;
   animation-delay: calc(1.2s + var(--i) * 0.07s);
@@ -313,12 +317,55 @@ a {
   }
 }
 
-/* Video card tips back flat as it scrolls toward the middle of the screen. */
+/* Stacked (mobile/tablet): the video card tips back flat as it scrolls toward
+   the middle of the screen. */
 .hero-video {
   --t: clamp(0, (0.5 - var(--p, 0)) / 0.3, 1);
   margin: 9vh auto 0;
   max-width: var(--max);
   perspective: 1600px;
+}
+
+/* Desktop: text left, video right, one screen tall. The card swings in on
+   load, then tips away as the hero scrolls off. */
+@media (min-width: 1100px) {
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: 56px;
+    max-width: 1440px;
+    min-height: 100vh;
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: 96px var(--gutter) 64px;
+    text-align: left;
+  }
+  .hero-text,
+  .dl-block {
+    align-items: flex-start;
+  }
+  .dl-block {
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+  }
+  .hero-video {
+    --t: 0;
+    --o: clamp(0, (var(--p, 0) - 0.5) / 0.4, 1);
+    margin: 0;
+    animation: card-in 1.3s 0.2s var(--ease-out) both;
+  }
+  .hero-video .video-card {
+    transform-origin: 0% 50%;
+    transform: rotateY(calc(var(--o) * -16deg)) rotateX(calc(var(--o) * 8deg)) scale(calc(1 - var(--o) * 0.08));
+  }
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: perspective(1600px) translateX(80px) rotateY(-28deg);
+  }
 }
 .video-card {
   position: relative;
@@ -382,6 +429,40 @@ a {
 }
 .play.hidden {
   display: none;
+}
+
+/* Launch video in focus (main.js moves the card to <body> and flies it). */
+.video-card.focus {
+  position: fixed;
+  z-index: 91;
+  margin: 0;
+  transform: none;
+  transform-origin: 0 0;
+  box-shadow:
+    0 40px 160px -30px color-mix(in srgb, var(--cyan) 40%, transparent),
+    0 30px 100px -20px #000;
+}
+.video-ph {
+  visibility: hidden;
+}
+.video-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgb(0 0 0 / 0.78);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  cursor: zoom-out;
+  transition: opacity 0.5s var(--ease);
+}
+.video-scrim.on {
+  opacity: 1;
+  pointer-events: auto;
+}
+.scroll-locked,
+.scroll-locked body {
+  overflow: hidden;
 }
 
 /* ---- Pinned scenes ---- */
