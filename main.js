@@ -17,6 +17,8 @@
     "linux-deb": RELEASES,
     "linux-rpm": RELEASES,
   };
+  // Google Form for feedback (bottom bar). Paste the form's share link here.
+  const FEEDBACK_URL = "";
   const PRIMARY = { windows: "windows-exe", mac: "mac-dmg", linux: "linux-appimage" };
   const OS_NAME = { windows: "Windows", mac: "macOS", linux: "Linux" };
 
@@ -32,6 +34,10 @@
 
   document.querySelectorAll("[data-asset]").forEach((a) => {
     a.href = DOWNLOADS[a.dataset.asset] ?? RELEASES;
+  });
+  document.querySelectorAll("[data-feedback]").forEach((a) => {
+    if (FEEDBACK_URL) a.href = FEEDBACK_URL;
+    else a.removeAttribute("target"); // no form yet: the button stays visible but goes nowhere
   });
   const os = detectOS();
   if (os) {
@@ -127,7 +133,14 @@
       bars.forEach((b, i) => b.classList.toggle("lit", i < lit));
     },
     frames(p) {
-      setText(frameSub, p < 0.52 ? "Black-box anything private." : "Then add a title, or a sticker.");
+      const state = p < 0.52 ? "a" : "b";
+      if (frameSub.dataset.state !== state) {
+        frameSub.dataset.state = state;
+        frameSub.innerHTML =
+          state === "a"
+            ? 'Black-box anything <span class="c-frame">private.</span>'
+            : 'Then add a <span class="c-frame">title</span>, or a <span class="c-frame">sticker</span>.';
+      }
     },
     ai(p) {
       const full = typed.dataset.typed;
@@ -135,18 +148,18 @@
       const count = new Set(
         aiChips.filter((c) => p >= parseFloat(c.style.getPropertyValue("--s")) + 0.02).map((c) => c.style.getPropertyValue("--s")),
       ).size;
-      const head = p < 0.28 ? "Describe the edit." : p < 0.72 ? "Your AI makes the first cut." : "You make the final one.";
+      const head = p < 0.28 ? "Describe the edit." : p < 0.68 ? "Your AI makes the first cut." : "You make the final one.";
       if (aiHead.dataset.state !== head) {
         aiHead.dataset.state = head;
-        aiHead.innerHTML = p < 0.72 && p >= 0.28 ? 'Your AI makes <span class="c-grad">the first cut.</span>' : head;
+        aiHead.innerHTML = p < 0.68 && p >= 0.28 ? 'Your AI makes <span class="c-grad">the first cut.</span>' : head;
       }
       let status;
       if (p < 0.27) status = "Waiting for your AI";
       else if (count < 10) status = `Editing · ${count} ${count === 1 ? "edit" : "edits"}`;
-      else if (p < 0.76) status = "✓ Done · 10 edits";
+      else if (p < 0.68) status = "✓ Done · 10 edits";
       else status = "Stretch a cut. Nudge a box. It's all yours.";
       setText(aiStatus, status);
-      aiStatus.classList.toggle("done", count >= 10 && p < 0.76);
+      aiStatus.classList.toggle("done", count >= 10 && p < 0.68);
     },
     render(p, el) {
       const q = range(p, 0.1, 0.75);
@@ -191,7 +204,6 @@
   const track = document.querySelector("[data-scrub-track]");
   const head = document.querySelector("[data-scrub-head]");
   const tc = document.querySelector("[data-tc]");
-  const topbar = document.querySelector("[data-topbar]");
   const hero = document.querySelector(".hero");
   const segEls = [...document.querySelectorAll("[data-seg]")];
   const DURATION = 53.7; // the launch video's length, for the timecode
@@ -238,7 +250,6 @@
 
     const past = scrollY > hero.offsetHeight * 0.55;
     scrubber.classList.toggle("show", past);
-    topbar.classList.toggle("show", past);
 
     const mid = scrollY + vh * 0.5;
     let cur = segEls[0];

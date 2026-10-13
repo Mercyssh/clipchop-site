@@ -208,35 +208,6 @@ a {
   color: var(--txt);
 }
 
-/* ---- Top bar (appears after the hero) ---- */
-.topbar {
-  position: fixed;
-  top: 12px;
-  left: 50%;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  width: max-content;
-  padding: 8px 8px 8px 14px;
-  background: color-mix(in srgb, var(--panel) 80%, transparent);
-  backdrop-filter: blur(14px);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  transform: translate(-50%, -90px);
-  transition: transform 0.5s var(--ease);
-}
-.topbar.show {
-  transform: translate(-50%, 0);
-}
-.topbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: var(--fs-1);
-  font-weight: 600;
-  text-decoration: none;
-}
 
 /* ---- Hero ---- */
 .hero {
@@ -903,20 +874,30 @@ a {
   opacity: 0.35;
   rotate: -12deg;
 }
-/* AI props */
-.graph {
-  width: 300px;
-  height: 220px;
-  overflow: visible;
+/* AI props: prompt bubbles and twinkling sparkles. */
+.bubble {
+  padding: 8px 14px;
+  border-radius: 14px 14px 14px 4px;
+  background: #2df98b0f;
+  border: 1px solid #2df98b30;
+  font-size: var(--fs-1);
+  color: #2df98b80;
+  white-space: nowrap;
 }
-.graph path {
-  fill: none;
-  stroke: #2df98b40;
-  stroke-width: 1.5;
-  stroke-dasharray: 4 6;
+.spark svg {
+  display: block;
+  width: var(--sz);
+  height: var(--sz);
+  fill: #2df98b;
+  animation: twinkle 3.2s ease-in-out infinite;
+  animation-delay: var(--dl);
 }
-.graph circle {
-  fill: #2df98b55;
+.spark:nth-child(even) svg {
+  fill: #17d4ea;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.7) rotate(0deg); }
+  50% { opacity: 0.7; transform: scale(1) rotate(20deg); }
 }
 .tchip {
   min-width: 60px;
@@ -1025,6 +1006,12 @@ a {
   transform: translateY(calc((1 - var(--b)) * 16px));
 }
 
+/* Keep the line and pill in front of the racing ruler. */
+.slow-line {
+  position: relative;
+  z-index: 1;
+}
+
 /* Scene: timelapse. Each extra "o" collapses in turn; the ruler races. */
 #speed {
   --q: clamp(0, (var(--p) - 0.15) / 0.6, 1);
@@ -1055,6 +1042,7 @@ a {
   opacity: calc(0.3 + var(--q) * 0.7);
 }
 .speed-pill {
+  z-index: 1;
   position: relative;
   padding: 6px 18px;
   border: 2px solid var(--speed);
@@ -1229,10 +1217,26 @@ a {
   }
 }
 
+/* Frames scene caption: larger and brighter than other scene subtitles. */
+.frame-sub {
+  font-size: var(--fs-3);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--txt);
+}
+.frame-sub .c-frame {
+  text-shadow: 0 0 24px #febc2e66;
+}
+
 /* Scene: AI. Prompt types, ten edits drop onto a mini timeline, then a tweak. */
 #ai {
   --tl: clamp(0, (var(--p) - 0.3) / 0.36, 1);
-  --f: clamp(0, (var(--p) - 0.76) / 0.14, 1);
+  /* Hand tweaks: cursor 1 arrives (--a1) and stretches a cut (--f); cursor 2
+     arrives (--a2) and drags a box (--f2). */
+  --a1: clamp(0, (var(--p) - 0.68) / 0.06, 1);
+  --f: clamp(0, (var(--p) - 0.74) / 0.1, 1);
+  --a2: clamp(0, (var(--p) - 0.8) / 0.06, 1);
+  --f2: clamp(0, (var(--p) - 0.86) / 0.1, 1);
 }
 .ai-head {
   font-size: var(--fs-4);
@@ -1354,9 +1358,36 @@ a {
   outline-offset: 2px;
 }
 .chip.tweak-move {
-  left: calc(var(--x) - var(--f) * 5%);
-  outline: 2px solid rgb(255 255 255 / calc(var(--f) * (1 - var(--f)) * 4));
+  left: calc(var(--x) - var(--f2) * 5%);
+  outline: 2px solid rgb(255 255 255 / calc(var(--f2) * (1 - var(--f2)) * 4));
   outline-offset: 2px;
+}
+/* Cursors: glide in from below-right, grab, drag, then the first one leaves. */
+.cur {
+  position: absolute;
+  z-index: 3;
+  top: 55%;
+  width: 22px;
+  height: 26px;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 6px #000c);
+}
+.cur path {
+  fill: #fff;
+  stroke: #0e0e0e;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+.cur-grow {
+  left: calc(var(--x) + var(--w) + var(--f) * 4% - 4px);
+  opacity: calc(var(--a1) * (1 - clamp(0, (var(--p) - 0.86) / 0.04, 1)));
+  transform: translate(calc((1 - var(--a1)) * 70px), calc((1 - var(--a1)) * 50px)) scale(calc(1 - (var(--f) * (1 - var(--f))) * 0.6));
+}
+.cur-move {
+  left: calc(var(--x) + var(--w) / 2 - var(--f2) * 5%);
+  opacity: var(--a2);
+  transform: translate(calc((1 - var(--a2)) * 80px), calc((1 - var(--a2)) * 60px)) scale(calc(1 - (var(--f2) * (1 - var(--f2))) * 0.6));
 }
 .tl-head {
   position: absolute;
@@ -1457,6 +1488,10 @@ a {
 .fine {
   font-size: var(--fs-1);
   color: var(--dim) !important;
+}
+.fine a {
+  color: var(--txt);
+  text-underline-offset: 3px;
 }
 .c-cut { color: var(--cut); }
 .c-speed { color: var(--speed); }
@@ -1717,8 +1752,8 @@ a {
   display: flex;
   align-items: center;
   gap: 14px;
-  width: min(760px, calc(100vw - 32px));
-  padding: 10px 14px;
+  width: min(980px, calc(100vw - 32px));
+  padding: 8px;
   border-radius: 14px;
   background: color-mix(in srgb, var(--panel) 82%, transparent);
   backdrop-filter: blur(14px);
@@ -1732,6 +1767,9 @@ a {
 .tc {
   font-size: var(--fs-1);
   font-variant-numeric: tabular-nums;
+}
+.scrubber .btn {
+  flex: 0 0 auto;
 }
 .scrub-track {
   position: relative;
@@ -1792,8 +1830,11 @@ a {
   border-top: 7px solid #fff;
 }
 @media (max-width: 760px) {
-  .scrubber .tc.dim {
+  .scrubber .tc {
     display: none;
+  }
+  .scrubber {
+    gap: 8px;
   }
 }
 

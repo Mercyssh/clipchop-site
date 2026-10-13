@@ -23,14 +23,6 @@
   <!-- Section-tinted colour wash behind everything (colour follows the section in view). -->
   <div class="ambient" aria-hidden="true"><i></i><i></i></div>
 
-  <header class="topbar" data-topbar>
-    <a class="topbar-brand" href="#top">
-      <img src="assets/clipchop-appicon.png" alt="" width="28" height="28">
-      <span>ClipChop</span>
-    </a>
-    <a class="btn sm" data-dl href="#get">Download</a>
-  </header>
-
   <main id="main">
     <!-- 1. Hero -->
     <section class="hero" id="top" data-scroll data-seg="#f5f5f5" data-name="Intro">
@@ -132,7 +124,6 @@
         <span class="px filler" style="--x:4%;--y:5%;--d:1.2">um</span>
         <span class="px filler hide-sm" style="--x:86%;--y:93%;--d:.8">like</span>
         <span class="px shard" style="--x:68%;--y:4%;--d:.9;--r:-6deg;--sw:130px"></span>
-        <span class="px film thin hide-sm" style="--x:-10%;--y:97%;--d:.5;--fs:-1"></span>
         <span class="px speed-tag" style="--x:94%;--y:42%;--d:1.4">4×</span>
         <span class="px speed-tag hide-sm" style="--x:2%;--y:76%;--d:.7">8×</span>
       </div>
@@ -213,7 +204,7 @@
           </div>
           <img class="sticker" src="assets/sticker.svg" alt="">
         </div>
-        <p class="scene-sub" data-frame-sub aria-hidden="true">Black-box anything private.</p>
+        <p class="frame-sub" data-frame-sub aria-hidden="true">Black-box anything <span class="c-frame">private.</span></p>
       </div>
     </section>
 
@@ -260,6 +251,8 @@
               <span class="chip frame title" style="--x:2%;--w:12%;--s:.58">T&nbsp;Devlog #7</span>
               <span class="chip frame" style="--x:20%;--w:9%;--s:.405"></span>
               <span class="chip frame tweak-move" style="--x:64%;--w:8%;--s:.545"></span>
+              <!-- Hand tweak 2: a cursor grabs the AI's box and drags it left. -->
+              <svg class="cur cur-move" style="--x:64%;--w:8%" viewBox="0 0 20 24"><path d="M2 2v17l4.6-4.4 3.1 7 3-1.3-3-6.9H16z"/></svg>
             </div>
           </div>
           <div class="lane-row"><span class="lbl">Video</span>
@@ -270,6 +263,8 @@
               <span class="chip cut" style="--x:44%;--w:6%;--s:.44">CUT</span>
               <span class="chip speed" style="--x:56%;--w:14%;--s:.475">8×</span>
               <span class="chip cut" style="--x:80%;--w:5%;--s:.51">CUT</span>
+              <!-- Hand tweak 1: a cursor grabs a cut's right edge and stretches it. -->
+              <svg class="cur cur-grow" style="--x:31%;--w:4%" viewBox="0 0 20 24"><path d="M2 2v17l4.6-4.4 3.1 7 3-1.3-3-6.9H16z"/></svg>
             </div>
           </div>
           <div class="lane-row"><span class="lbl">Captions</span>
@@ -291,10 +286,13 @@
     <!-- Feature 4 -->
     <section class="feature flip" data-scroll data-seg="#2df98b" data-name="AI first cut" style="--tint:#17d4ea; --tint2:#2df98b">
       <div class="bg" aria-hidden="true">
-        <svg class="px graph" style="--x:2%;--y:2%;--d:.6" viewBox="0 0 300 220"><path d="M20 30 C 120 30, 120 120, 220 120 M20 30 C 90 110, 150 190, 270 190 M220 120 L 270 190"/><circle cx="20" cy="30" r="6"/><circle cx="220" cy="120" r="5"/><circle cx="270" cy="190" r="5"/></svg>
-        <span class="px tchip cut" style="--x:90%;--y:7%;--d:1.3">CUT</span>
-        <span class="px tchip speed hide-sm" style="--x:5%;--y:91%;--d:1">8×</span>
-        <svg class="px graph hide-sm" style="--x:80%;--y:78%;--d:1.2" viewBox="0 0 300 220"><path d="M30 190 C 120 190, 140 60, 260 40 M30 190 C 110 140, 160 140, 200 110 M200 110 L 260 40"/><circle cx="30" cy="190" r="6"/><circle cx="200" cy="110" r="5"/><circle cx="260" cy="40" r="5"/></svg>
+        <span class="px bubble" style="--x:3%;--y:4%;--d:1.1">cut the dead air</span>
+        <span class="px bubble hide-sm" style="--x:80%;--y:91%;--d:.7">caption it, please</span>
+        <span class="px bubble hide-sm" style="--x:84%;--y:3%;--d:1.4">speed up the slow bits</span>
+        <span class="px spark" style="--x:40%;--y:5%;--d:1.6;--sz:22px;--dl:0s"><svg viewBox="0 0 24 24"><path d="M12 0c.8 6.6 5.4 11.2 12 12-6.6.8-11.2 5.4-12 12-.8-6.6-5.4-11.2-12-12C6.6 11.2 11.2 6.6 12 0z"/></svg></span>
+        <span class="px spark" style="--x:95%;--y:45%;--d:.9;--sz:16px;--dl:-1.3s"><svg viewBox="0 0 24 24"><path d="M12 0c.8 6.6 5.4 11.2 12 12-6.6.8-11.2 5.4-12 12-.8-6.6-5.4-11.2-12-12C6.6 11.2 11.2 6.6 12 0z"/></svg></span>
+        <span class="px spark hide-sm" style="--x:6%;--y:88%;--d:1.3;--sz:26px;--dl:-2.4s"><svg viewBox="0 0 24 24"><path d="M12 0c.8 6.6 5.4 11.2 12 12-6.6.8-11.2 5.4-12 12-.8-6.6-5.4-11.2-12-12C6.6 11.2 11.2 6.6 12 0z"/></svg></span>
+        <span class="px spark hide-sm" style="--x:56%;--y:94%;--d:.6;--sz:14px;--dl:-0.7s"><svg viewBox="0 0 24 24"><path d="M12 0c.8 6.6 5.4 11.2 12 12-6.6.8-11.2 5.4-12 12-.8-6.6-5.4-11.2-12-12C6.6 11.2 11.2 6.6 12 0z"/></svg></span>
       </div>
       <div class="feature-text" data-scroll>
         <h2>Let your AI make <span class="c-grad">the first cut.</span></h2>
@@ -334,7 +332,7 @@
         <span class="px spec hide-sm" style="--x:82%;--y:93%;--d:1.2">60 fps</span>
       </div>
       <div class="feature-text" data-scroll>
-        <h2>One-click render.</h2>
+        <h2><span class="c-grad">One-click</span> render.</h2>
         <p>No export maze. ClipChop matches your footage's resolution and frame rate and picks the fastest encoder your PC has.</p>
         <ul class="chips">
           <li>MP4 (H.264)</li>
@@ -356,7 +354,7 @@
       <div class="note-inner">
         <div class="avatar" aria-hidden="true"><img src="assets/clipchop-appicon.png" alt=""></div>
         <h2>Why I made this.</h2>
-        <p class="reveal" data-scroll data-reveal>[Placeholder - your personal note goes here, 80 to 150 words. Say who you are, why you built ClipChop, and what kind of videos you made with it. Keep it plain and first-person. This paragraph lights up word by word as the visitor scrolls, so short sentences read best.]</p>
+        <p class="reveal" data-scroll data-reveal>I work on a lot of creative projects, but I've never enjoyed documenting them. Opening DaVinci Resolve or Blender just to trim a devlog felt like overkill, and I spent more time fighting the software than actually editing and getting the update out. So I started leaving screen recording on and, at the end, asking Claude to stitch it all into a video and make the cuts for me. The results were good, but I couldn't fine-tune the edits the way I wanted. That's why I made ClipChop: intuitive, easy to pick up, no bloat. Download it, install it, and start editing.</p>
         <p class="sig">- Your name</p>
       </div>
     </section>
@@ -374,7 +372,7 @@
             <a class="btn primary" data-asset="windows-exe" href="#">Installer (.exe)</a>
             <a class="btn" data-asset="windows-msi" href="#">.msi</a>
           </div>
-          <p class="fine">Ready on Windows 11. On Windows 10, install Microsoft WebView2 first.</p>
+          <p class="fine">Ready on Windows 11. On Windows 10, install <a href="https://developer.microsoft.com/microsoft-edge/webview2/" target="_blank" rel="noopener">Microsoft WebView2</a> first.</p>
         </article>
         <article class="plat" data-os="mac">
           <svg class="plat-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.5 2-3.7 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9s-2-.9-3.3-.8a4.9 4.9 0 0 0-4.1 2.5c-1.8 3.1-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.2 0 1.7-.8 3.2-.8s1.9.8 3.2.8c1.3 0 2.2-1.2 3-2.4a10 10 0 0 0 1.4-2.8 4.3 4.3 0 0 1-2.5-4.3zM14 5.2A4.3 4.3 0 0 0 15 2a4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3.1A3.6 3.6 0 0 0 14 5.2z"/></svg>
@@ -411,9 +409,11 @@
 
   <!-- The page as a timeline: one coloured region per section, playhead = scroll. -->
   <nav class="scrubber" data-scrubber aria-label="Page sections">
+    <a class="btn primary sm" data-dl href="#get">Download</a>
     <span class="tc" data-tc>00:00:00</span>
     <div class="scrub-track" data-scrub-track><span class="scrub-head" data-scrub-head></span></div>
     <span class="tc dim">00:53:21</span>
+    <a class="btn sm" data-feedback href="#" target="_blank" rel="noopener">Feedback</a>
   </nav>
 
   <script src="vendor/lenis.min.js"></script>
