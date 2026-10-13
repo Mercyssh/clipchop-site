@@ -43,7 +43,15 @@
   if (os) {
     document.querySelectorAll("[data-dl]").forEach((a) => {
       a.href = DOWNLOADS[PRIMARY[os]];
-      if (a.hasAttribute("data-dl-label")) a.textContent = `Download for ${OS_NAME[os]}`;
+      if (a.hasAttribute("data-dl-label")) {
+        // Label plus the platform's logo, borrowed from its download card.
+        a.textContent = `Download for ${OS_NAME[os]}`;
+        const icon = document.querySelector(`.plat[data-os="${os}"] .plat-icon`)?.cloneNode(true);
+        if (icon) {
+          icon.setAttribute("class", "os-icon");
+          a.prepend(icon);
+        }
+      }
     });
     document.querySelector(`.plat[data-os="${os}"]`)?.classList.add("mine");
   }
@@ -52,23 +60,6 @@
 
   // ---- Small DOM prep -----------------------------------------------------
   document.querySelectorAll("[data-year]").forEach((el) => (el.textContent = new Date().getFullYear()));
-
-  // App-style wavy wordmark.
-  document.querySelectorAll("[data-wavy]").forEach((el) => {
-    if (reduced) return;
-    const text = el.textContent;
-    el.setAttribute("aria-label", text);
-    el.textContent = "";
-    [...text].forEach((ch, i) => {
-      const s = document.createElement("span");
-      s.className = "wavy-char";
-      s.style.setProperty("--i", i);
-      s.setAttribute("aria-hidden", "true");
-      s.textContent = ch;
-      el.append(s);
-    });
-    el.classList.add("wavy");
-  });
 
   // Split text into word spans with an index (captions plate, personal note).
   function splitWords(el, cls) {

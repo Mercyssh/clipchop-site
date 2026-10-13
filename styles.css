@@ -194,6 +194,11 @@ a {
 .btn.primary:hover {
   box-shadow: 0 8px 30px -8px color-mix(in srgb, var(--green) 60%, transparent);
 }
+.btn .os-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
 .btn.sm {
   padding: 7px 14px;
 }
@@ -213,7 +218,7 @@ a {
 .hero {
   position: relative;
   isolation: isolate;
-  padding: 9vh var(--gutter) 28vh;
+  padding: 12vh var(--gutter) 24vh;
   text-align: center;
 }
 
@@ -475,36 +480,19 @@ a {
   }
 }
 .wordmark {
-  margin-top: 12px;
+  /* Padding gives the tight-tracked final "p" (overhang + descender) room
+     inside the gradient's background box, so background-clip: text can't
+     crop it; matching negative margins keep the layout where it was. */
+  padding: 0 0.12em 0.14em;
+  margin: 12px -0.12em -0.14em;
   font-size: var(--fs-5);
   font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 1.1;
-}
-.wordmark,
-.wavy-char {
   background: linear-gradient(180deg, #fff 30%, #9a9a9a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-.wordmark.wavy {
-  background: none;
-}
-/* The app's wavy letter effect (src/app.css .wavy-char). */
-.wavy-char {
-  display: inline-block;
-  /* Room for glyph overhang (tight tracking pushes the last "p" past its box,
-     and background-clip: text would crop it). */
-  padding: 0 0.1em 0.12em;
-  margin: 0 -0.1em -0.12em;
-  background-clip: text;
-  animation: wavy 4.2s ease-in-out infinite;
-  animation-delay: calc(1.2s + var(--i) * 0.07s);
-}
-@keyframes wavy {
-  0%, 20%, 100% { transform: translateY(0); }
-  10% { transform: translateY(-10px); }
 }
 .tagline {
   margin-top: 20px;
@@ -554,7 +542,7 @@ a {
     min-height: 100svh;
     margin: 0 auto;
     /* Extra bottom padding lifts the content clear of the floor timeline. */
-    padding: 32px var(--gutter) 36vh;
+    padding: 64px var(--gutter) 30vh;
     text-align: left;
   }
   .hero-text,
@@ -1596,14 +1584,6 @@ a {
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-.avatar {
-  width: 64px;
-  height: 64px;
-  padding: 10px;
-  border-radius: 50%;
-  background: var(--panel);
-  border: 1px solid var(--line);
 }
 .note h2 {
   font-size: var(--fs-4);

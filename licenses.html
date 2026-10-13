@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Third-party notices - ClipChop</title>
+  <meta name="theme-color" content="#0e0e0e">
+  <link rel="icon" type="image/png" href="assets/clipchop-appicon.png">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .lic {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 64px var(--gutter) 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .lic h1 {
+      font-size: var(--fs-4);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .lic h2 {
+      margin-top: 24px;
+      font-size: var(--fs-3);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .lic p,
+    .lic li {
+      color: #bdbdbd;
+    }
+    .lic ul {
+      padding-left: 20px;
+    }
+    .lic a:not(.text-link) {
+      color: var(--txt);
+      text-underline-offset: 3px;
+    }
+    .lic pre {
+      margin: 0;
+      max-height: 70vh;
+      overflow: auto;
+      padding: 20px;
+      border-radius: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: var(--fs-1);
+      line-height: 1.5;
+      color: #bdbdbd;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <main class="lic">
+    <a class="text-link" href="index.html">Back to ClipChop</a>
+    <h1>Third-party notices</h1>
+    <p>ClipChop and this website are built on open-source work. Each part is licensed by its own authors under the license shown.</p>
+
+    <h2>This website</h2>
+    <ul>
+      <li>Instrument Sans: SIL Open Font License 1.1 (<a href="assets/fonts/InstrumentSans-OFL.txt">license text</a>)</li>
+      <li>Lenis 1.1.13, smooth scrolling: MIT License, Copyright (c) 2024 darkroom.engineering (<a href="vendor/LICENSE-lenis.txt">license text</a>)</li>
+    </ul>
+
+    <h2>The ClipChop app</h2>
+    <p>Everything bundled inside ClipChop, with full license texts. Also available as <a href="licenses/THIRD-PARTY-NOTICES.txt">a plain text file</a>.</p>
+    <pre id="notices">Loading…</pre>
+  </main>
+
+  <script>
+    fetch("licenses/THIRD-PARTY-NOTICES.txt")
+      .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+      .then((t) => (document.getElementById("notices").textContent = t))
+      .catch(() => {
+        document.getElementById("notices").textContent = "Couldn't load the notices here. Open the plain text file linked above.";
+      });
+  </script>
+</body>
+</html>
