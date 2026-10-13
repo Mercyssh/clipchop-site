@@ -218,7 +218,7 @@ a {
 .hero {
   position: relative;
   isolation: isolate;
-  padding: 12vh var(--gutter) 24vh;
+  padding: 12vh var(--gutter);
   text-align: center;
 }
 
@@ -226,6 +226,8 @@ a {
    main.js drives --hp (playhead 0→1 on a 12 s loop) and --fade; each region
    appears as the playhead passes its --x. */
 .hero-bg {
+  /* Floor timeline switched off for now; remove this line to bring it back. */
+  display: none;
   position: absolute;
   z-index: -1;
   top: 0;
@@ -542,7 +544,7 @@ a {
     min-height: 100svh;
     margin: 0 auto;
     /* Extra bottom padding lifts the content clear of the floor timeline. */
-    padding: 64px var(--gutter) 30vh;
+    padding: 64px var(--gutter);
     text-align: left;
   }
   .hero-text,
@@ -1545,6 +1547,8 @@ a {
   --dir: -1;
 }
 .loop-card::before {
+  /* Glow switched off for now; remove this line to bring it back. */
+  display: none;
   /* tinted glow from the section's tool colours */
   content: "";
   position: absolute;
@@ -1596,11 +1600,6 @@ a {
   font-size: var(--fs-3);
   line-height: 1.45;
   font-weight: 500;
-  --q: clamp(0, (var(--p, 1) - 0.18) / 0.42, 1);
-}
-.reveal .rw {
-  --on: clamp(0, var(--q) * var(--n) - var(--i), 1);
-  opacity: calc(0.16 + var(--on) * 0.84);
 }
 .sig {
   color: var(--dim);
@@ -1720,6 +1719,9 @@ a {
 .footer a:hover {
   color: var(--txt);
 }
+.footer .made {
+  color: #5a5a5a;
+}
 .footer .sp {
   flex: 1;
 }
@@ -1817,6 +1819,54 @@ a {
   .scrubber {
     gap: 8px;
   }
+}
+
+/* ---- Subpages (third-party notices, feedback) ---- */
+.lic {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 64px var(--gutter) 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.lic h1 {
+  font-size: var(--fs-4);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.lic h2 {
+  margin-top: 24px;
+  font-size: var(--fs-3);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.lic p,
+.lic li {
+  color: #bdbdbd;
+}
+.lic ul {
+  padding-left: 20px;
+}
+.lic a:not(.text-link) {
+  color: var(--txt);
+  text-underline-offset: 3px;
+}
+.lic pre {
+  margin: 0;
+  max-height: 70vh;
+  overflow: auto;
+  padding: 20px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  line-height: 1.5;
+  color: #bdbdbd;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* ---- Reduced motion: no scrubbing, no pinning, final states shown ---- */

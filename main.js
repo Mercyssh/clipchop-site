@@ -6,19 +6,19 @@
   "use strict";
 
   // ---- Downloads ----------------------------------------------------------
-  // Point these at the real installer URLs. Until then they all open the
-  // latest GitHub release.
-  const RELEASES = "https://github.com/Mercyssh/Clippy/releases/latest";
+  // Installers live on the public releases repo. Each release uploads them
+  // under these stable names, so "latest/download/<name>" always serves the
+  // newest version and these links never need editing.
+  const RELEASES = "https://github.com/Mercyssh/clipchop-releases/releases/latest";
+  const FILE = (name) => `${RELEASES}/download/${name}`;
   const DOWNLOADS = {
-    "windows-exe": RELEASES,
-    "windows-msi": RELEASES,
-    "mac-dmg": RELEASES,
-    "linux-appimage": RELEASES,
-    "linux-deb": RELEASES,
-    "linux-rpm": RELEASES,
+    "windows-exe": FILE("ClipChop_x64-setup.exe"),
+    "windows-msi": FILE("ClipChop_x64_en-US.msi"),
+    "mac-dmg": FILE("ClipChop_aarch64.dmg"),
+    "linux-appimage": FILE("ClipChop_amd64.AppImage"),
+    "linux-deb": FILE("ClipChop_amd64.deb"),
+    "linux-rpm": FILE("ClipChop_x86_64.rpm"),
   };
-  // Google Form for feedback (bottom bar). Paste the form's share link here.
-  const FEEDBACK_URL = "";
   const PRIMARY = { windows: "windows-exe", mac: "mac-dmg", linux: "linux-appimage" };
   const OS_NAME = { windows: "Windows", mac: "macOS", linux: "Linux" };
 
@@ -34,10 +34,6 @@
 
   document.querySelectorAll("[data-asset]").forEach((a) => {
     a.href = DOWNLOADS[a.dataset.asset] ?? RELEASES;
-  });
-  document.querySelectorAll("[data-feedback]").forEach((a) => {
-    if (FEEDBACK_URL) a.href = FEEDBACK_URL;
-    else a.removeAttribute("target"); // no form yet: the button stays visible but goes nowhere
   });
   const os = detectOS();
   if (os) {
@@ -55,6 +51,26 @@
     });
     document.querySelector(`.plat[data-os="${os}"]`)?.classList.add("mine");
   }
+
+  // ---- Analytics (Umami, cookieless) --------------------------------------
+  // trackEvent() is a no-op until the Umami script has loaded (or if it's blocked).
+  const trackEvent = (name, data) => {
+    try {
+      window.umami?.track(name, data);
+    } catch {}
+  };
+  // Download clicks: which platform/format, and which button it came from.
+  document.querySelectorAll("[data-dl]").forEach((a) =>
+    a.addEventListener("click", () =>
+      trackEvent("download-click", { platform: os ?? "unknown", file: os ? PRIMARY[os] : "none", from: a.closest(".scrubber") ? "bar" : "hero" }),
+    ),
+  );
+  document.querySelectorAll("[data-asset]").forEach((a) =>
+    a.addEventListener("click", () =>
+      trackEvent("download-click", { platform: a.closest(".plat")?.dataset.os ?? "unknown", file: a.dataset.asset, from: "cards" }),
+    ),
+  );
+  document.querySelectorAll("[data-feedback]").forEach((a) => a.addEventListener("click", () => trackEvent("feedback-click")));
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -76,7 +92,6 @@
     return [...el.querySelectorAll("." + cls)];
   }
   const capWords = splitWords(document.querySelector("[data-words]"), "w");
-  document.querySelectorAll("[data-reveal]").forEach((el) => splitWords(el, "rw"));
 
   // Fake waveform bars for the captions scene.
   const wave = document.querySelector("[data-wave]");
@@ -228,6 +243,7 @@
   }
 
   let activeSeg = null;
+  const seenSegs = new Set(); // for drop-off: each section is reported once per visit
   function updateChrome(vh) {
     const max = Math.max(1, document.documentElement.scrollHeight - vh);
     const t = clamp(scrollY / max);
@@ -247,6 +263,10 @@
     for (const el of segEls) if (el.getBoundingClientRect().top + scrollY <= mid) cur = el;
     if (cur !== activeSeg) {
       activeSeg = cur;
+      if (!seenSegs.has(cur)) {
+        seenSegs.add(cur);
+        trackEvent("section-reached", { section: cur.dataset.name });
+      }
       document.documentElement.style.setProperty("--amb", cur.dataset.seg);
       segs.forEach((s) => s.link?.classList.toggle("on", s.el === cur));
     }
@@ -487,7 +507,11 @@
     busy = false;
   }
 
-  playBtn.addEventListener("click", openVideo);
+  playBtn.addEventListener("click", () => {
+    trackEvent("video-play");
+    openVideo();
+  });
+  launch.addEventListener("ended", () => trackEvent("video-complete"));
   scrim.addEventListener("click", closeVideo);
   addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeVideo();

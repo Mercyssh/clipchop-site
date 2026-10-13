@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feedback - ClipChop</title>
+  <meta name="description" content="Report a bug or share your experience with ClipChop.">
+  <meta name="theme-color" content="#0e0e0e">
+  <link rel="icon" type="image/png" href="assets/clipchop-appicon.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="feedback.css">
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="6dcefb8d-35ae-429a-947c-a0c11dccce45" data-domains="mercyssh.github.io"></script>
+</head>
+<body>
+  <main class="lic fb">
+    <a class="text-link" href="index.html">Back to ClipChop</a>
+    <h1>Feedback</h1>
+    <p>Thanks for trying ClipChop. Every message gets read.</p>
+
+    <!-- Step 1: pick a path -->
+    <div class="fb-pick" role="tablist" aria-label="Feedback type">
+      <button class="fb-card" type="button" role="tab" data-pick="bug" aria-selected="false" aria-controls="form-bug" style="--c:#ff5f57">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.5 10.6 5.6M15 3.5l-1.6 2.1M8 8.5h8a2 2 0 0 1 2 2v3a6 6 0 0 1-12 0v-3a2 2 0 0 1 2-2zM12 8.5V20M6 12H3M21 12h-3M6.5 16.5l-2.5 1.5M17.5 16.5l2.5 1.5M8 8.5a4 4 0 0 1 8 0"/></svg>
+        <span class="fb-card-title">Report a bug</span>
+        <span class="fb-card-sub">Something broke or behaved oddly. Takes a minute.</span>
+      </button>
+      <button class="fb-card" type="button" role="tab" data-pick="experience" aria-selected="false" aria-controls="form-experience" style="--c:#2df98b">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17.5H4A1.5 1.5 0 0 1 2.5 16V7A1.5 1.5 0 0 1 4 5.5zM7 10h10M7 13.5h6"/></svg>
+        <span class="fb-card-title">Share your experience</span>
+        <span class="fb-card-sub">What worked, what didn't, what's missing. About 2 minutes.</span>
+      </button>
+    </div>
+
+    <!-- Step 2a: bug report (minimal) -->
+    <form class="fb-form" id="form-bug" data-form="bug" role="tabpanel" hidden novalidate>
+      <h2>Report a bug</h2>
+      <label class="fld">
+        <span class="f-lbl">What happened? <em>Required</em></span>
+        <span class="hint">What were you doing, and what went wrong? Steps to repeat it help a lot.</span>
+        <textarea name="what" rows="6" required></textarea>
+      </label>
+      <div class="row2">
+        <label class="fld">
+          <span class="f-lbl">Your system</span>
+          <select name="system" data-os-select>
+            <option value="">Choose…</option>
+            <option>Windows 11</option>
+            <option>Windows 10</option>
+            <option>macOS (Apple Silicon)</option>
+            <option>macOS (Intel)</option>
+            <option>Linux</option>
+          </select>
+        </label>
+        <label class="fld">
+          <span class="f-lbl">ClipChop version</span>
+          <input name="version" type="text" value="1.0.2">
+        </label>
+      </div>
+      <label class="fld">
+        <span class="f-lbl">Email</span>
+        <span class="hint">Optional. Only if you'd like a reply.</span>
+        <input name="email" type="email" autocomplete="email">
+      </label>
+      <label class="hp" aria-hidden="true">Leave empty <input name="company" type="text" tabindex="-1" autocomplete="off"></label>
+      <div class="fb-actions">
+        <button class="btn primary" type="submit">Send bug report</button>
+        <span class="fb-msg" data-msg role="status"></span>
+      </div>
+    </form>
+
+    <!-- Step 2b: experience (longer) -->
+    <form class="fb-form" id="form-experience" data-form="experience" role="tabpanel" hidden novalidate>
+      <h2>Share your experience</h2>
+
+      <label class="fld">
+        <span class="f-lbl">Your system</span>
+        <select name="system" data-os-select>
+          <option value="">Choose…</option>
+          <option>Windows 11</option>
+          <option>Windows 10</option>
+          <option>macOS (Apple Silicon)</option>
+          <option>macOS (Intel)</option>
+          <option>Linux</option>
+        </select>
+      </label>
+
+      <div class="fld" role="group" aria-labelledby="q1">
+        <span class="f-lbl" id="q1">What do you mostly make videos for?</span>
+        <div class="chipset">
+          <label><input type="checkbox" name="uses" value="Devlogs"><span>Devlogs</span></label>
+          <label><input type="checkbox" name="uses" value="Tutorials"><span>Tutorials</span></label>
+          <label><input type="checkbox" name="uses" value="Gameplay clips"><span>Gameplay clips</span></label>
+          <label><input type="checkbox" name="uses" value="Work demos"><span>Work demos</span></label>
+          <label><input type="checkbox" name="uses" value="Social posts"><span>Social posts</span></label>
+          <label><input type="checkbox" name="uses" value="Other"><span>Other</span></label>
+        </div>
+      </div>
+
+      <div class="fld" role="group" aria-labelledby="q2">
+        <span class="f-lbl" id="q2">How easy was ClipChop to pick up?</span>
+        <div class="scale" data-scale>
+          <span class="end">I got lost</span>
+          <div class="seg">
+            <label><input type="radio" name="ease" value="1"><span>1</span></label>
+            <label><input type="radio" name="ease" value="2"><span>2</span></label>
+            <label><input type="radio" name="ease" value="3"><span>3</span></label>
+            <label><input type="radio" name="ease" value="4"><span>4</span></label>
+            <label><input type="radio" name="ease" value="5"><span>5</span></label>
+          </div>
+          <span class="end">Instantly</span>
+        </div>
+      </div>
+
+      <div class="fld" role="group" aria-labelledby="q3">
+        <span class="f-lbl" id="q3">Did download, install and first launch go smoothly?</span>
+        <div class="chipset">
+          <label><input type="radio" name="install" value="Yes"><span>Yes</span></label>
+          <label><input type="radio" name="install" value="Had a hiccup"><span>Had a hiccup</span></label>
+        </div>
+      </div>
+      <label class="fld" data-if-hiccup hidden>
+        <span class="f-lbl">What happened?</span>
+        <textarea name="hiccup" rows="3"></textarea>
+      </label>
+
+      <div class="fld" role="group" aria-labelledby="q4">
+        <span class="f-lbl" id="q4">Which features did you use?</span>
+        <div class="chipset">
+          <label style="--c:#ff5f57"><input type="checkbox" name="features" value="Cut"><span>Cut</span></label>
+          <label style="--c:#5b8dff"><input type="checkbox" name="features" value="Timelapse"><span>Timelapse</span></label>
+          <label style="--c:#febc2e"><input type="checkbox" name="features" value="Text and images"><span>Text and images</span></label>
+          <label style="--c:#febc2e"><input type="checkbox" name="features" value="Black boxes"><span>Black boxes</span></label>
+          <label style="--c:#8ee6b8"><input type="checkbox" name="features" value="Captions (Whisper)"><span>Captions (Whisper)</span></label>
+          <label style="--c:#2df98b"><input type="checkbox" name="features" value="AI first cut (MCP)"><span>AI first cut (MCP)</span></label>
+          <label><input type="checkbox" name="features" value="Render"><span>Render</span></label>
+        </div>
+      </div>
+
+      <label class="fld">
+        <span class="f-lbl">What frustrated you, or felt missing?</span>
+        <textarea name="frustrated" rows="4"></textarea>
+      </label>
+      <label class="fld">
+        <span class="f-lbl">What did you like most?</span>
+        <textarea name="liked" rows="3"></textarea>
+      </label>
+
+      <div class="fld" role="group" aria-labelledby="q5">
+        <span class="f-lbl" id="q5">How likely are you to recommend ClipChop to a friend?</span>
+        <div class="scale" data-scale>
+          <span class="end">Not likely</span>
+          <div class="seg seg-10">
+            <label><input type="radio" name="recommend" value="1"><span>1</span></label>
+            <label><input type="radio" name="recommend" value="2"><span>2</span></label>
+            <label><input type="radio" name="recommend" value="3"><span>3</span></label>
+            <label><input type="radio" name="recommend" value="4"><span>4</span></label>
+            <label><input type="radio" name="recommend" value="5"><span>5</span></label>
+            <label><input type="radio" name="recommend" value="6"><span>6</span></label>
+            <label><input type="radio" name="recommend" value="7"><span>7</span></label>
+            <label><input type="radio" name="recommend" value="8"><span>8</span></label>
+            <label><input type="radio" name="recommend" value="9"><span>9</span></label>
+            <label><input type="radio" name="recommend" value="10"><span>10</span></label>
+          </div>
+          <span class="end">Very likely</span>
+        </div>
+      </div>
+
+      <label class="fld">
+        <span class="f-lbl">How did you find ClipChop?</span>
+        <input name="source" type="text">
+      </label>
+      <label class="fld">
+        <span class="f-lbl">Email</span>
+        <span class="hint">Optional. Only if you're happy for me to follow up.</span>
+        <input name="email" type="email" autocomplete="email">
+      </label>
+      <label class="hp" aria-hidden="true">Leave empty <input name="company" type="text" tabindex="-1" autocomplete="off"></label>
+      <div class="fb-actions">
+        <button class="btn primary" type="submit">Send feedback</button>
+        <span class="fb-msg" data-msg role="status"></span>
+      </div>
+    </form>
+
+    <!-- Step 3: thanks -->
+    <div class="fb-thanks" data-thanks hidden>
+      <h2>Thank you!</h2>
+      <p data-thanks-text>Your feedback is on its way.</p>
+      <div class="fb-actions">
+        <a class="btn" href="index.html">Back to ClipChop</a>
+        <button class="btn" type="button" data-again>Send another</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="feedback.js"></script>
+</body>
+</html>

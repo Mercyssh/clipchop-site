@@ -1,0 +1,302 @@
+/* Feedback page. Builds on the shared subpage layout (.lic in styles.css) and
+   the app's controls: panels, segmented buttons, chips. */
+
+/* ---- Step 1: two choice cards ---- */
+.fb-pick {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+.fb-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 24px;
+  border-radius: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--txt);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.4s var(--ease-out),
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+.fb-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+}
+.fb-card svg {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 6px;
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fb-card-title {
+  font-size: var(--fs-3);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.fb-card-sub {
+  font-size: var(--fs-1);
+  color: var(--dim);
+}
+.fb-card[aria-selected="true"] {
+  border-color: var(--c);
+  box-shadow: 0 24px 70px -36px var(--c);
+}
+@media (max-width: 640px) {
+  .fb-pick {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Step 2: the forms ---- */
+.fb {
+  --ctl-h: 44px; /* shared height: text inputs, dropdowns, chips, scale buttons */
+}
+.fb-form,
+.fb-thanks {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px;
+  border-radius: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  animation: fb-in 0.5s var(--ease-out) both;
+}
+.fb-form[hidden],
+.fb-thanks[hidden] {
+  display: none;
+}
+@keyframes fb-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+.lic .fb-form h2,
+.lic .fb-thanks h2 {
+  margin-top: 0;
+}
+.fld {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.fld[hidden] {
+  display: none;
+}
+.f-lbl {
+  padding: 0;
+  font-size: var(--fs-2);
+  font-weight: 600;
+  color: var(--txt);
+}
+.f-lbl em {
+  margin-left: 6px;
+  font-size: var(--fs-1);
+  font-style: normal;
+  font-weight: 500;
+  color: var(--dim);
+}
+.hint {
+  font-size: var(--fs-1);
+  color: var(--dim);
+}
+.fb-form input[type="text"],
+.fb-form input[type="email"],
+.fb-form textarea,
+.fb-form select {
+  width: 100%;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--txt);
+  font: 400 var(--fs-2) / 1.5 var(--font);
+  transition: border-color 0.2s;
+}
+.fb-form input[type="text"],
+.fb-form input[type="email"],
+.fb-form select {
+  height: var(--ctl-h);
+}
+.fb-form textarea {
+  padding: 10px 14px;
+  resize: vertical;
+  min-height: 90px;
+}
+.fb-form select {
+  appearance: none;
+  padding-right: 40px;
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%237d7d7d' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 14px center / 16px;
+  cursor: pointer;
+}
+.fb-form input:hover,
+.fb-form textarea:hover,
+.fb-form select:hover {
+  border-color: #3a3a3a;
+}
+.fb-form input:focus,
+.fb-form textarea:focus,
+.fb-form select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.fld.invalid textarea,
+.fld.invalid input {
+  border-color: var(--cut);
+}
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 640px) {
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Chips (checkboxes / radios), like the home page's chips. */
+.chipset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chipset label,
+.seg label {
+  position: relative;
+  cursor: pointer;
+}
+.chipset input,
+.seg input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.chipset span {
+  display: inline-flex;
+  align-items: center;
+  height: var(--ctl-h);
+  padding: 0 16px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  font-size: var(--fs-1);
+  color: var(--txt);
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.chipset label:hover span {
+  border-color: #3a3a3a;
+}
+.chipset input:checked + span {
+  border-color: var(--c, var(--accent));
+  background: color-mix(in srgb, var(--c, var(--accent)) 16%, var(--bg));
+}
+.chipset input:focus-visible + span,
+.seg input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Rating scales: the app's segmented control. */
+.scale {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.scale .end {
+  font-size: var(--fs-1);
+  color: var(--dim);
+}
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.seg span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: calc(var(--ctl-h) - 2px); /* the group's border adds the other 2px */
+  padding: 0 12px;
+  background: var(--bg);
+  font-size: var(--fs-1);
+  font-weight: 600;
+  text-align: center;
+  color: var(--dim);
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.seg label + label span {
+  border-left: 1px solid var(--line-strong);
+}
+.seg label:hover span {
+  color: var(--txt);
+}
+.seg input:checked + span {
+  background: var(--accent);
+  color: var(--bg);
+}
+@media (max-width: 640px) {
+  .seg-10 span {
+    min-width: 0;
+    padding: 0 8px;
+  }
+  .scale {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Honeypot: invisible to people, tempting to bots. */
+.hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+button.btn {
+  font-family: var(--font);
+  cursor: pointer;
+}
+.fb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+.fb-msg {
+  font-size: var(--fs-1);
+  color: var(--dim);
+}
+.fb-msg.err {
+  color: var(--cut);
+}
+.fb-form button[type="submit"][disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
