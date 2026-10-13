@@ -573,7 +573,7 @@ a {
 }
 .video-card {
   position: relative;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 2;
   border-radius: 20px;
   overflow: hidden;
   background: var(--panel);
@@ -1477,6 +1477,7 @@ a {
   font-size: var(--fs-1);
   color: var(--dim) !important;
 }
+.feature-text p a,
 .fine a {
   color: var(--txt);
   text-underline-offset: 3px;

@@ -410,8 +410,8 @@
   function targetRect() {
     const vw = document.documentElement.clientWidth;
     const vh = innerHeight;
-    const w = Math.min(vw * 0.9, vh * 0.86 * (16 / 9), 1600);
-    const h = w * (9 / 16);
+    const w = Math.min(vw * 0.9, vh * 0.86 * (3 / 2), 1500);
+    const h = w * (2 / 3);
     return { left: (vw - w) / 2, top: (vh - h) / 2, width: w, height: h };
   }
 
