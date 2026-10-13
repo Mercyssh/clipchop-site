@@ -75,7 +75,7 @@
   box-sizing: border-box;
 }
 html {
-  scroll-behavior: smooth;
+  /* No CSS smooth scrolling: Lenis (main.js) handles it. */
   background: var(--bg);
   overflow-x: clip;
 }
@@ -240,8 +240,252 @@ a {
 
 /* ---- Hero ---- */
 .hero {
-  padding: 14vh var(--gutter) 0;
+  position: relative;
+  isolation: isolate;
+  padding: 9vh var(--gutter) 28vh;
   text-align: center;
+}
+
+/* Living timeline backdrop: a giant faint timeline lying back like a floor.
+   main.js drives --hp (playhead 0→1 on a 12 s loop) and --fade; each region
+   appears as the playhead passes its --x. */
+.hero-bg {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  overflow: hidden;
+  pointer-events: none;
+}
+.htl {
+  --hp: 0;
+  --fade: 1;
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  bottom: 2%;
+  height: 72%;
+  display: grid;
+  grid-template-rows: 34px repeat(3, 1fr);
+  gap: 14px;
+  padding: 0 4%;
+  transform-origin: 50% 100%;
+  transform:
+    perspective(900px)
+    translate3d(calc(var(--mx, 0) * -24px), var(--rise, 0px), 0)
+    rotateX(52deg);
+  -webkit-mask: linear-gradient(to top, #000 30%, transparent 92%);
+  mask: linear-gradient(to top, #000 30%, transparent 92%);
+  opacity: 0.6;
+}
+.htl-ruler {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid #ffffff1a;
+  font-size: var(--fs-2);
+  color: #ffffff30;
+  font-variant-numeric: tabular-nums;
+}
+.htl-lane {
+  position: relative;
+  border-radius: 14px;
+  background: #ffffff07;
+  border: 1px solid #ffffff0d;
+}
+.htl-lane.video {
+  background: #5b8dff12;
+}
+.htl .r {
+  --on: clamp(0, (var(--hp) - var(--x)) * 40, 1);
+  position: absolute;
+  top: 12%;
+  bottom: 12%;
+  left: calc(var(--x) * 100%);
+  width: calc(var(--w) * 100%);
+  border: 2px solid;
+  border-radius: 10px;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--on));
+  opacity: calc(var(--on) * var(--fade));
+}
+.htl .r.cut {
+  border-color: #ff5f57aa;
+  background: repeating-linear-gradient(-45deg, #ff5f5740 0 12px, #ff5f5714 12px 24px);
+}
+.htl .r.speed {
+  border-color: #5b8dffaa;
+  background: #5b8dff2a;
+  box-shadow: 0 0 40px -6px #5b8dff88;
+}
+.htl .r.frame {
+  border-color: #febc2eaa;
+  background: #0009;
+}
+.htl .r.capt {
+  border-width: 1px;
+  border-color: #8ee6b866;
+  background: #8ee6b822;
+}
+.htl-head {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(4% + var(--hp) * 92%);
+  width: 3px;
+  background: #fff;
+  box-shadow: 0 0 24px #fff, 0 0 60px #ffffff80;
+  opacity: var(--fade);
+}
+
+/* Floating tool objects around the hero video. Outer .obj follows the mouse
+   (by depth --d) and scatters on scroll (--sc); inner .bob idles. */
+.objs {
+  --sc: clamp(0, (var(--p, 0.5) - 0.5) / 0.32, 1);
+  /* Temporarily hidden; remove this line to bring the objects back. */
+  display: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.obj {
+  position: absolute;
+  z-index: 2;
+  transform: translate3d(
+      calc(var(--mx, 0) * var(--d) * 22px + var(--sc) * var(--dx) * 1px),
+      calc(var(--my, 0) * var(--d) * 16px + var(--sc) * var(--dy) * 1px),
+      0
+    )
+    rotate(calc(var(--sc) * var(--rot) * 1deg));
+  opacity: calc(1 - var(--sc));
+}
+.obj .bob {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bob 6s ease-in-out infinite;
+  animation-delay: calc(var(--d) * -2.3s);
+}
+.o-cut {
+  top: -7%;
+  left: -6%;
+}
+.o-cut .bob {
+  padding: 8px 18px;
+  border: 2px solid var(--cut);
+  border-radius: 10px;
+  background: repeating-linear-gradient(-45deg, #ff5f5770 0 8px, #ff5f5730 8px 16px), #1a0d0d;
+  font-size: var(--fs-1);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+  box-shadow: 0 16px 40px -12px #ff5f57aa;
+  rotate: -8deg;
+}
+.o-speed {
+  bottom: 6%;
+  left: -9%;
+}
+.o-speed .bob {
+  padding: 8px 20px;
+  border: 2px solid var(--speed);
+  border-radius: 10px;
+  background: #131c33;
+  font-size: var(--fs-3);
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 0 40px -4px var(--speed);
+  rotate: 6deg;
+}
+.o-frame {
+  top: -9%;
+  right: 14%;
+}
+.o-frame .bob {
+  position: relative;
+  width: 120px;
+  height: 64px;
+  border: 2px solid var(--frame);
+  border-radius: 6px;
+  background: #000c;
+  box-shadow: 0 0 30px -6px var(--frame);
+  rotate: 4deg;
+}
+.o-frame i,
+.fr i {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  background: var(--frame);
+  border-radius: 2px;
+}
+.o-frame i:nth-child(1), .fr i:nth-child(1) { left: -5px; top: -5px; }
+.o-frame i:nth-child(2), .fr i:nth-child(2) { right: -5px; top: -5px; }
+.o-frame i:nth-child(3), .fr i:nth-child(3) { left: -5px; bottom: -5px; }
+.o-frame i:nth-child(4), .fr i:nth-child(4) { right: -5px; bottom: -5px; }
+.o-capt {
+  bottom: -8%;
+  right: 4%;
+}
+.o-capt .bob {
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: #000d;
+  border: 1px solid #8ee6b855;
+  font-size: var(--fs-2);
+  font-weight: 600;
+  color: var(--capt);
+  white-space: nowrap;
+  box-shadow: 0 16px 40px -14px #8ee6b8aa;
+}
+.o-sticker {
+  top: 34%;
+  right: -8%;
+}
+.o-sticker img {
+  width: 150px;
+  filter: drop-shadow(0 14px 22px #000b);
+  rotate: 10deg;
+}
+@media (max-width: 1099px) {
+  .o-frame,
+  .o-capt,
+  .o-sticker {
+    display: none;
+  }
+  .o-cut { left: -2%; top: -10%; }
+  .o-speed { left: auto; right: -2%; bottom: -10%; }
+}
+
+/* Idle float shared by the video cards and the hero objects. */
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(0.6deg); }
+}
+.float {
+  position: relative;
+  animation: bob 7s ease-in-out infinite;
+}
+/* Soft floor shadow that shrinks as the card rises. */
+.float::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 12%;
+  right: 12%;
+  bottom: -46px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #000c, transparent);
+  filter: blur(6px);
+  animation: bob-shadow 7s ease-in-out infinite;
+}
+@keyframes bob-shadow {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.9; }
+  50% { transform: translateY(12px) scale(0.86); opacity: 0.6; }
 }
 .hero-text {
   display: flex;
@@ -321,9 +565,9 @@ a {
    the middle of the screen. */
 .hero-video {
   --t: clamp(0, (0.5 - var(--p, 0)) / 0.3, 1);
+  position: relative;
   margin: 9vh auto 0;
   max-width: var(--max);
-  perspective: 1600px;
 }
 
 /* Desktop: text left, video right, one screen tall. The card swings in on
@@ -338,7 +582,8 @@ a {
     min-height: 100vh;
     min-height: 100svh;
     margin: 0 auto;
-    padding: 96px var(--gutter) 64px;
+    /* Extra bottom padding lifts the content clear of the floor timeline. */
+    padding: 32px var(--gutter) 36vh;
     text-align: left;
   }
   .hero-text,
@@ -358,7 +603,7 @@ a {
   }
   .hero-video .video-card {
     transform-origin: 0% 50%;
-    transform: rotateY(calc(var(--o) * -16deg)) rotateX(calc(var(--o) * 8deg)) scale(calc(1 - var(--o) * 0.08));
+    transform: perspective(1600px) rotateY(calc(var(--o) * -16deg + var(--ry, 0deg))) rotateX(calc(var(--o) * 8deg + var(--rx, 0deg))) scale(calc(1 - var(--o) * 0.08));
   }
 }
 @keyframes card-in {
@@ -375,11 +620,24 @@ a {
   background: var(--panel);
   border: 1px solid var(--line);
   transform-origin: 50% 100%;
-  transform: rotateX(calc(var(--t) * 26deg)) scale(calc(1 - var(--t) * 0.1));
+  transform: perspective(1600px) rotateX(calc(var(--t) * 26deg + var(--rx, 0deg))) rotateY(var(--ry, 0deg)) scale(calc(1 - var(--t) * 0.1));
   box-shadow:
     0 40px 120px -40px color-mix(in srgb, var(--cyan) 45%, transparent),
     0 30px 80px -30px #000;
   will-change: transform;
+}
+/* Light sheen that follows the cursor across tilting cards (--sx/--sy/--sh
+   come from main.js). */
+.video-card::before,
+.loop-card .float::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--sx, 50%) var(--sy, 50%), rgb(255 255 255 / 0.13), transparent 60%);
+  opacity: var(--sh, 0);
+  pointer-events: none;
 }
 .video-card::after {
   /* gradient hairline */
@@ -408,19 +666,30 @@ a {
   justify-content: center;
   gap: 14px;
   border: 0;
-  background: radial-gradient(circle at 50% 50%, #0006, #0000 60%);
+  /* Dim the poster so the button and label read clearly over it. */
+  background: radial-gradient(ellipse 60% 70% at 50% 50%, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0.3) 70%, rgb(0 0 0 / 0.22));
   color: var(--accent);
   font: 600 var(--fs-1) var(--font);
   cursor: pointer;
+  transition: background 0.3s var(--ease);
+}
+.play span {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.55);
+  backdrop-filter: blur(8px);
+  border: 1px solid #ffffff1f;
+  text-shadow: 0 1px 8px #000;
 }
 .play svg {
   width: 84px;
   height: 84px;
   padding: 24px 22px 24px 26px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, rgb(0 0 0 / 0.45));
   backdrop-filter: blur(10px);
-  border: 1px solid #ffffff30;
+  border: 1px solid #ffffff40;
+  box-shadow: 0 10px 40px -8px #000;
   transition: transform 0.35s var(--ease-out), background 0.2s;
 }
 .play:hover svg {
@@ -485,7 +754,224 @@ a {
   padding: 0 var(--gutter);
   overflow: hidden;
   text-align: center;
+  isolation: isolate;
 }
+
+/* ---- Scene backgrounds ----
+   .bg sits behind the scene. Every .px prop parallaxes by its depth --d with
+   the scene's scroll progress --p and the mouse (--mx/--my on :root). */
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.px {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate3d(
+    calc(var(--mx, 0) * var(--d) * 14px),
+    calc((var(--p, 0.5) - 0.5) * var(--d) * -320px + var(--my, 0) * var(--d) * 10px),
+    0
+  );
+}
+
+/* Giant outline word. The faint base stroke is always there; the .glow copy
+   strokes in the scene colour (--tc) and is masked to a circle around the
+   cursor (--gx/--gy, written by main.js), so the outline lights up nearby.
+   Sized to the viewport by main.js (decorative, outside the type scale). */
+.bg-word {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 18vw;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1.2px rgb(255 255 255 / 0.028);
+  transform: translate(-50%, calc(-50% + (var(--p, 0.5) - 0.5) * -140px));
+}
+.bg-word .glow {
+  position: absolute;
+  inset: 0;
+  -webkit-text-stroke: 1.5px var(--tc);
+  -webkit-mask: radial-gradient(220px circle at var(--gx, -999px) var(--gy, -999px), #000 0%, #0005 45%, transparent 75%);
+  mask: radial-gradient(220px circle at var(--gx, -999px) var(--gy, -999px), #000 0%, #0005 45%, transparent 75%);
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tc) 35%, transparent));
+  opacity: 0.55;
+}
+/* Touch screens: no cursor, so the glow rests on the centre and breathes. */
+.no-hover .bg-word .glow {
+  --gx: 50%;
+  --gy: 50%;
+  animation: breathe 5s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.7; }
+}
+
+/* Feature rows: motifs span the full viewport width behind the row, fainter
+   than they were in the scenes. */
+.feature > .bg {
+  left: 50%;
+  right: auto;
+  width: 100vw;
+  translate: -50% 0;
+  opacity: 0.55;
+}
+
+/* Cut props */
+.filler {
+  font-size: var(--fs-3);
+  font-weight: 600;
+  color: #ff5f5738;
+  text-decoration: line-through;
+  text-decoration-color: #ff5f5770;
+  white-space: nowrap;
+}
+.shard {
+  width: var(--sw);
+  height: 28px;
+  border: 2px solid #ff5f5755;
+  border-radius: 8px;
+  background: repeating-linear-gradient(-45deg, #ff5f5726 0 8px, transparent 8px 16px);
+  rotate: var(--r);
+}
+/* Timelapse props: film strips slide sideways at their own speed (--fs). */
+.film {
+  width: 130vw;
+  height: 70px;
+  background:
+    radial-gradient(circle, #0e0e0e 3px, transparent 3.5px) 0 8px / 22px 54px repeat-x,
+    linear-gradient(90deg, #5b8dff2e 0 92px, transparent 92px 100px) 0 0 / 100px 100% repeat-x,
+    #5b8dff10;
+  border-block: 1px solid #5b8dff33;
+  opacity: 0.6;
+  translate: calc(var(--p, 0.5) * var(--fs) * -600px) 0;
+}
+.film.thin {
+  height: 46px;
+  opacity: 0.4;
+}
+.speed-tag {
+  padding: 4px 12px;
+  border: 1px solid #5b8dff55;
+  border-radius: 8px;
+  font-size: var(--fs-2);
+  font-weight: 700;
+  color: #5b8dff80;
+}
+/* Captions props */
+.cue {
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  line-height: 1.5;
+  text-align: left;
+  color: #8ee6b84d;
+  white-space: nowrap;
+}
+.sliver {
+  width: 220px;
+  height: 40px;
+  background: repeating-linear-gradient(90deg, #8ee6b833 0 3px, transparent 3px 7px);
+  -webkit-mask: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+}
+/* Frames props */
+.fr {
+  width: var(--fw);
+  height: var(--fh);
+  border: 2px solid #febc2e55;
+  border-radius: 6px;
+}
+.fr i {
+  opacity: 0.45;
+}
+.bb {
+  width: var(--fw);
+  height: var(--fh);
+  border-radius: 6px;
+  background: #000;
+  border: 1px solid #febc2e33;
+}
+.mini-sticker {
+  width: 90px;
+  opacity: 0.35;
+  rotate: -12deg;
+}
+/* AI props */
+.graph {
+  width: 300px;
+  height: 220px;
+  overflow: visible;
+}
+.graph path {
+  fill: none;
+  stroke: #2df98b40;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+.graph circle {
+  fill: #2df98b55;
+}
+.tchip {
+  min-width: 60px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 2px solid;
+  border-radius: 8px;
+  font-size: var(--fs-1);
+  font-weight: 700;
+  color: #ffffff60;
+  opacity: 0.55;
+}
+.tchip.cut {
+  border-color: #ff5f57;
+  background: repeating-linear-gradient(-45deg, #ff5f5740 0 5px, transparent 5px 10px);
+}
+.tchip.speed {
+  border-color: #5b8dff;
+  background: #5b8dff30;
+}
+.tchip.frame {
+  width: 80px;
+  border-color: #febc2e;
+  background: #000;
+}
+/* Render props */
+.tiles {
+  width: var(--fw);
+  height: var(--fh);
+  background:
+    linear-gradient(#0e0e0e 2px, transparent 2px) 0 0 / 20px 20px,
+    linear-gradient(90deg, #0e0e0e 2px, transparent 2px) 0 0 / 20px 20px,
+    linear-gradient(135deg, #17d4ea30, #2df98b18);
+  -webkit-mask: radial-gradient(closest-side, #000 40%, transparent);
+  mask: radial-gradient(closest-side, #000 40%, transparent);
+}
+.spec {
+  padding-left: 60px;
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  color: #ffffff40;
+  background: linear-gradient(90deg, transparent, #2df98b60) 0 50% / 48px 1px no-repeat;
+}
+@media (max-width: 760px) {
+  .hide-sm {
+    display: none;
+  }
+  .bg .px {
+    opacity: 0.6;
+  }
+}
+
 .kinetic {
   font-size: var(--fs-4);
   font-weight: 600;
@@ -632,7 +1118,6 @@ a {
   --on: clamp(0, var(--q) * var(--n) * 1.05 - var(--i), 1);
   display: inline-block;
   opacity: calc(0.12 + var(--on) * 0.88);
-  transform: translateY(calc((1 - var(--on)) * 0.35em));
   transition: color 0.25s, text-shadow 0.25s;
 }
 .cap-plate .w.hot {
@@ -938,6 +1423,8 @@ a {
 
 /* ---- Feature rows ---- */
 .feature {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: 5fr 7fr;
   align-items: center;
@@ -1015,10 +1502,20 @@ a {
   position: relative;
   aspect-ratio: 4 / 3;
   border-radius: 18px;
-  background: var(--panel);
   transform: perspective(1400px) rotateY(calc((var(--p, 0.5) - 0.5) * var(--dir) * -34deg)) translateY(calc((0.5 - var(--p, 0.5)) * 50px));
+  will-change: transform;
+}
+/* Inner float: idle bob (.float) plus mouse tilt (--rx/--ry from main.js). */
+.loop-card .float {
+  height: 100%;
+  border-radius: 18px;
+}
+.loop-card .float > video {
+  transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
   clip-path: inset(calc((1 - var(--e)) * 22%) calc((1 - var(--e)) * 8%) round 18px);
-  will-change: transform, clip-path;
+}
+.loop-card .float::before {
+  transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
 }
 .feature.flip .loop-card {
   --dir: -1;
@@ -1316,15 +1813,32 @@ a {
     height: auto;
   }
   .stage {
-    position: static;
+    position: relative;
     height: auto;
     padding-block: 14vh;
   }
   .video-card,
   .loop-card,
+  .loop-card .float > video,
   .feature-text,
-  .get-title .half {
+  .get-title .half,
+  .px,
+  .obj {
     transform: none !important;
     clip-path: none !important;
+  }
+  .film {
+    translate: none;
+  }
+  .bg-word {
+    transform: translate(-50%, -50%) !important;
+  }
+  /* Static timeline: floor tilt kept, all edits shown, no playhead. */
+  .htl {
+    --hp: 1 !important;
+    transform: perspective(900px) rotateX(58deg) !important;
+  }
+  .htl-head {
+    display: none;
   }
 }

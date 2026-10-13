@@ -157,6 +157,12 @@
     },
   };
 
+  // ---- Smooth scroll ------------------------------------------------------
+  // Lenis (vendor/lenis.min.js) smooths wheel scrolling; it is driven from the
+  // single animation loop at the bottom of this file. Off for reduced motion.
+  const lenis = !reduced && window.Lenis ? new window.Lenis({ lerp: 0.1, anchors: true }) : null;
+  const scrollToEl = (el) => (lenis ? lenis.scrollTo(el) : el.scrollIntoView());
+
   // ---- Scroll engine ------------------------------------------------------
   const scrolled = [...document.querySelectorAll("[data-scroll]")];
 
@@ -211,7 +217,7 @@
       a.innerHTML = `<span>${s.el.dataset.name}</span>`;
       a.addEventListener("click", (e) => {
         e.preventDefault();
-        scrollTo({ top: s.el.getBoundingClientRect().top + scrollY, behavior: reduced ? "auto" : "smooth" });
+        scrollToEl(s.el);
       });
       track.insertBefore(a, head);
       s.link = a;
@@ -244,26 +250,123 @@
     }
   }
 
-  let ticking = false;
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      ticking = false;
+  // ---- Giant outline words: fit each to ~92% of the viewport width ---------
+  const bgWords = [...document.querySelectorAll(".bg-word")];
+  function fitWords() {
+    for (const el of bgWords) {
+      el.style.fontSize = "100px";
+      const w = el.offsetWidth || 1;
+      el.style.fontSize = Math.min((100 * innerWidth * 0.92) / w, innerHeight * 0.62) + "px";
+    }
+  }
+
+  // ---- Pointer: mouse parallax, card tilt, outline glow --------------------
+  const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  document.documentElement.classList.toggle("no-hover", !fine);
+  const ptr = { x: 0, y: 0, in: false };
+  if (fine && !reduced) {
+    addEventListener(
+      "pointermove",
+      (e) => {
+        ptr.x = e.clientX;
+        ptr.y = e.clientY;
+        ptr.in = true;
+      },
+      { passive: true },
+    );
+    document.documentElement.addEventListener("pointerleave", () => (ptr.in = false));
+  }
+  const rootStyle = document.documentElement.style;
+  const tilts = [...document.querySelectorAll("[data-tilt]")].map((el) => ({ el, rx: 0, ry: 0, sh: 0 }));
+  const glows = [...document.querySelectorAll("[data-glow]")];
+  const htl = document.querySelector("[data-htl]");
+  const lerp = (a, b, k) => a + (b - a) * k;
+  const LOOP_MS = 12000; // hero timeline playhead cycle
+  let mx = 0;
+  let my = 0;
+
+  function motion(now) {
+    const vw = innerWidth;
+    const vh = innerHeight;
+
+    // Whole-page mouse parallax (-1..1), eased.
+    mx = lerp(mx, ptr.in ? (ptr.x / vw) * 2 - 1 : 0, 0.08);
+    my = lerp(my, ptr.in ? (ptr.y / vh) * 2 - 1 : 0, 0.08);
+    rootStyle.setProperty("--mx", mx.toFixed(3));
+    rootStyle.setProperty("--my", my.toFixed(3));
+
+    // Cards turn to face the cursor; a sheen follows it across the card.
+    for (const t of tilts) {
+      const r = t.el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) continue;
+      let tx = 0;
+      let ty = 0;
+      let sh = 0;
+      if (ptr.in && !t.el.classList.contains("focus")) {
+        const dx = clamp((ptr.x - (r.left + r.width / 2)) / (vw / 2), -1, 1);
+        const dy = clamp((ptr.y - (r.top + r.height / 2)) / (vh / 2), -1, 1);
+        tx = -dy * 7;
+        ty = dx * 9;
+        const inside = ptr.x > r.left && ptr.x < r.right && ptr.y > r.top && ptr.y < r.bottom;
+        sh = inside ? 1 : 0.3 * (1 - Math.min(1, Math.hypot(dx, dy)));
+        t.el.style.setProperty("--sx", (ptr.x - r.left).toFixed(0) + "px");
+        t.el.style.setProperty("--sy", (ptr.y - r.top).toFixed(0) + "px");
+      }
+      t.rx = lerp(t.rx, tx, 0.1);
+      t.ry = lerp(t.ry, ty, 0.1);
+      t.sh = lerp(t.sh, sh, 0.1);
+      t.el.style.setProperty("--rx", t.rx.toFixed(2) + "deg");
+      t.el.style.setProperty("--ry", t.ry.toFixed(2) + "deg");
+      t.el.style.setProperty("--sh", t.sh.toFixed(3));
+    }
+
+    // Outline words: glow mask centred on the cursor, in each word's own space.
+    if (ptr.in) {
+      for (const el of glows) {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) continue;
+        el.style.setProperty("--gx", (ptr.x - r.left).toFixed(0) + "px");
+        el.style.setProperty("--gy", (ptr.y - r.top).toFixed(0) + "px");
+      }
+    }
+
+    // Hero timeline: playhead sweeps, edits appear as it passes, then fade/reset.
+    // On scroll it rises faster than the page, so its front edge wipes up the
+    // screen on the way into the next section.
+    if (htl && scrollY < innerHeight * 1.5) {
+      htl.style.setProperty("--rise", (-0.35 * scrollY).toFixed(1) + "px");
+      const t = (now % LOOP_MS) / LOOP_MS;
+      const fade = t < 0.04 ? t / 0.04 : t > 0.9 ? 1 - (t - 0.9) / 0.1 : 1;
+      htl.style.setProperty("--hp", clamp(t / 0.86).toFixed(4));
+      htl.style.setProperty("--fade", fade.toFixed(3));
+    }
+  }
+
+  // ---- One loop: Lenis → scroll-driven state → pointer motion ------------
+  let lastY = -1;
+  let dirty = true;
+  function frame(now) {
+    lenis?.raf(now);
+    if (dirty || scrollY !== lastY) {
+      lastY = scrollY;
+      dirty = false;
       update();
-    });
+    }
+    if (!reduced) motion(now);
+    requestAnimationFrame(frame);
+  }
+  const relayout = () => {
+    buildScrubber();
+    fitWords();
+    dirty = true;
   };
-  addEventListener("scroll", onScroll, { passive: true });
-  addEventListener("resize", () => {
-    buildScrubber();
-    onScroll();
-  });
-  addEventListener("load", () => {
-    buildScrubber();
-    update();
-  });
+  addEventListener("resize", relayout);
+  addEventListener("load", relayout);
+  document.fonts?.ready.then(relayout);
   buildScrubber();
+  fitWords();
   update();
+  requestAnimationFrame(frame);
 
   // ---- Feature loops: play only while on screen ---------------------------
   const loops = [...document.querySelectorAll("video.loop")];
@@ -337,6 +440,7 @@
   function lockScroll(on) {
     const gap = innerWidth - document.documentElement.clientWidth;
     document.documentElement.classList.toggle("scroll-locked", on);
+    if (lenis) on ? lenis.stop() : lenis.start();
     document.body.style.paddingRight = on && gap > 0 ? gap + "px" : "";
   }
 

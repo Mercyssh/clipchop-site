@@ -3,17 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ClipChop — simple video editing</title>
+  <title>ClipChop - simple video editing</title>
   <meta name="description" content="Simple video editing. No layers, no fuss. Cut, speed up, black-box, caption with Whisper on your PC, or let your AI make the first cut. Windows, macOS, Linux.">
   <meta name="theme-color" content="#0e0e0e">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ClipChop — simple video editing">
+  <meta property="og:title" content="ClipChop - simple video editing">
   <meta property="og:description" content="Simple video editing. No layers, no fuss.">
   <meta property="og:image" content="assets/brag.jpg">
   <meta property="og:video" content="assets/brag.mp4">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/png" href="assets/clipchop-appicon.png">
   <link rel="preload" href="assets/fonts/InstrumentSans.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="vendor/lenis.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -32,10 +33,42 @@
 
   <main id="main">
     <!-- 1. Hero -->
-    <section class="hero" id="top" data-seg="#f5f5f5" data-name="Intro">
+    <section class="hero" id="top" data-scroll data-seg="#f5f5f5" data-name="Intro">
+      <!-- Living timeline: a giant faint editor timeline lying like a floor; the
+           playhead sweeps on a loop and edits appear as it passes them. -->
+      <div class="hero-bg" aria-hidden="true">
+        <div class="htl" data-htl>
+          <div class="htl-ruler"><span>0:00</span><span>1:00</span><span>2:00</span><span>3:00</span><span>4:00</span><span>5:00</span><span>6:00</span><span>7:00</span><span>8:00</span><span>9:00</span></div>
+          <div class="htl-lane">
+            <i class="r frame" style="--x:.06;--w:.08"></i>
+            <i class="r frame" style="--x:.41;--w:.06"></i>
+            <i class="r frame" style="--x:.72;--w:.09"></i>
+          </div>
+          <div class="htl-lane video">
+            <i class="r speed" style="--x:.12;--w:.12"></i>
+            <i class="r cut" style="--x:.29;--w:.05"></i>
+            <i class="r cut" style="--x:.47;--w:.04"></i>
+            <i class="r speed" style="--x:.55;--w:.14"></i>
+            <i class="r cut" style="--x:.78;--w:.05"></i>
+            <i class="r cut" style="--x:.9;--w:.04"></i>
+          </div>
+          <div class="htl-lane">
+            <i class="r capt" style="--x:.03;--w:.07"></i>
+            <i class="r capt" style="--x:.13;--w:.09"></i>
+            <i class="r capt" style="--x:.26;--w:.06"></i>
+            <i class="r capt" style="--x:.36;--w:.1"></i>
+            <i class="r capt" style="--x:.5;--w:.07"></i>
+            <i class="r capt" style="--x:.61;--w:.09"></i>
+            <i class="r capt" style="--x:.74;--w:.06"></i>
+            <i class="r capt" style="--x:.84;--w:.1"></i>
+          </div>
+          <span class="htl-head"></span>
+        </div>
+      </div>
+
       <div class="hero-text">
         <img class="hero-icon" src="assets/clipchop-appicon.png" alt="" width="96" height="96">
-        <h1 class="wordmark" data-wavy>ClipChop</h1>
+        <h1 class="wordmark">ClipChop</h1>
         <p class="tagline">Simple video editing. <span class="dim">No layers, no fuss.</span></p>
         <div class="dl-block">
           <a class="btn primary" data-dl data-dl-label href="#get">Download ClipChop</a>
@@ -44,30 +77,48 @@
       </div>
 
       <div class="hero-video" data-scroll>
-        <div class="video-card">
-          <video id="launch" preload="metadata" poster="assets/brag.jpg" playsinline aria-label="ClipChop launch video">
-            <source src="assets/brag.mp4" type="video/mp4">
-          </video>
-          <button class="play" type="button" data-play aria-label="Play the launch video with sound">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
-            <span>Watch the 50-second tour</span>
-          </button>
+        <div class="float">
+          <div class="video-card" data-tilt>
+            <video id="launch" preload="metadata" poster="assets/brag.jpg" playsinline aria-label="ClipChop launch video">
+              <source src="assets/brag.mp4" type="video/mp4">
+            </video>
+            <button class="play" type="button" data-play aria-label="Play the launch video with sound">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+              <span>Watch the 50-second tour</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool objects floating around the video; they follow the mouse by
+             depth and scatter as the hero scrolls away. -->
+        <div class="objs" aria-hidden="true">
+          <span class="obj o-cut" style="--d:1.2;--dx:-320;--dy:-220;--rot:-40"><span class="bob">CUT</span></span>
+          <span class="obj o-speed" style="--d:1.6;--dx:-360;--dy:260;--rot:30"><span class="bob">4×</span></span>
+          <span class="obj o-frame" style="--d:.8;--dx:120;--dy:-320;--rot:25"><span class="bob"><i></i><i></i><i></i><i></i></span></span>
+          <span class="obj o-capt" style="--d:1.3;--dx:280;--dy:300;--rot:-20"><span class="bob">it finally runs</span></span>
+          <span class="obj o-sticker" style="--d:1.8;--dx:380;--dy:-60;--rot:60"><span class="bob"><img src="assets/sticker.svg" alt=""></span></span>
         </div>
       </div>
     </section>
 
     <!-- 2a. Scene: a cut closes the gap -->
-    <section class="scene pin" id="cut" data-scroll="pin" data-seg="#ff5f57" data-name="Cut">
+    <section class="scene pin" id="cut" data-scroll="pin" data-seg="#ff5f57" data-name="Cut" style="--tc:#ff5f57">
       <div class="stage">
+        <div class="bg" aria-hidden="true">
+          <span class="bg-word" data-glow><span>CUT</span><span class="glow">CUT</span></span>
+        </div>
         <p class="visually-hidden">Cut the dead air: your clip gets to the point.</p>
-        <p class="kinetic cut-line" aria-hidden="true">Your clip <span class="cutspan"><span class="cut-words">um, so, uh, wait&nbsp;—</span><span class="cut-region"><b>CUT</b></span></span>gets to the point.</p>
+        <p class="kinetic cut-line" aria-hidden="true">Your clip <span class="cutspan"><span class="cut-words">um, so, uh, wait&nbsp;-</span><span class="cut-region"><b>CUT</b></span></span>gets to the point.</p>
         <p class="scene-sub cut-saved" aria-hidden="true">−4.2 s of dead air, gone.</p>
       </div>
     </section>
 
     <!-- 2b. Scene: timelapse squeezes the slow part -->
-    <section class="scene pin" id="speed" data-scroll="pin" data-seg="#5b8dff" data-name="Timelapse">
+    <section class="scene pin" id="speed" data-scroll="pin" data-seg="#5b8dff" data-name="Timelapse" style="--tc:#5b8dff">
       <div class="stage">
+        <div class="bg" aria-hidden="true">
+          <span class="bg-word" data-glow><span>TIMELAPSE</span><span class="glow">TIMELAPSE</span></span>
+        </div>
         <div class="ruler" aria-hidden="true"></div>
         <p class="visually-hidden">Speed up the slow parts.</p>
         <p class="kinetic slow-line" aria-hidden="true">This part is sl<span class="o0">o</span><span class="o" style="--i:0">o</span><span class="o" style="--i:1">o</span><span class="o" style="--i:2">o</span><span class="o" style="--i:3">o</span><span class="o" style="--i:4">o</span><span class="o" style="--i:5">o</span><span class="o" style="--i:6">o</span><span class="o" style="--i:7">o</span><span class="o" style="--i:8">o</span><span class="o" style="--i:9">o</span>w.</p>
@@ -76,7 +127,15 @@
     </section>
 
     <!-- Feature 1 -->
-    <section class="feature" data-seg="#5b8dff" data-name="Cut &amp; speed" style="--tint:#ff5f57; --tint2:#5b8dff">
+    <section class="feature" data-scroll data-seg="#5b8dff" data-name="Cut &amp; speed" style="--tint:#ff5f57; --tint2:#5b8dff">
+      <div class="bg" aria-hidden="true">
+        <span class="px filler" style="--x:4%;--y:5%;--d:1.2">um</span>
+        <span class="px filler hide-sm" style="--x:86%;--y:93%;--d:.8">like</span>
+        <span class="px shard" style="--x:68%;--y:4%;--d:.9;--r:-6deg;--sw:130px"></span>
+        <span class="px film thin hide-sm" style="--x:-10%;--y:97%;--d:.5;--fs:-1"></span>
+        <span class="px speed-tag" style="--x:94%;--y:42%;--d:1.4">4×</span>
+        <span class="px speed-tag hide-sm" style="--x:2%;--y:76%;--d:.7">8×</span>
+      </div>
       <div class="feature-text" data-scroll>
         <h2><span class="c-cut">Cut</span> and <span class="c-speed">speed up</span> in seconds.</h2>
         <p>Pick a tool, drag over the boring part. Cuts disappear, timelapses play 4×, 8×, whatever you set.</p>
@@ -87,15 +146,20 @@
         </ul>
       </div>
       <figure class="loop-card" data-scroll>
-        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/cut-timelapse.jpg" aria-label="Dragging a red cut and a blue 4× timelapse onto the timeline; playback skips the cut and races through the timelapse.">
-          <source src="assets/loops/cut-timelapse.mp4" type="video/mp4">
-        </video>
+        <div class="float" data-tilt>
+          <video class="loop" muted loop playsinline preload="none" poster="assets/loops/cut-timelapse.jpg" aria-label="Dragging a red cut and a blue 4× timelapse onto the timeline; playback skips the cut and races through the timelapse.">
+            <source src="assets/loops/cut-timelapse.mp4" type="video/mp4">
+          </video>
+        </div>
       </figure>
     </section>
 
     <!-- 3a. Scene: captions ripple in -->
-    <section class="scene pin" id="captions" data-scroll="pin" data-seg="#8ee6b8" data-name="Captions">
+    <section class="scene pin" id="captions" data-scroll="pin" data-seg="#8ee6b8" data-name="Captions" style="--tc:#8ee6b8">
       <div class="stage">
+        <div class="bg" aria-hidden="true">
+          <span class="bg-word" data-glow><span>CAPTIONS</span><span class="glow">CAPTIONS</span></span>
+        </div>
         <div class="cap-status" aria-hidden="true">
           <span data-cap-status>Loading Model</span>
           <span class="track"><i></i></span>
@@ -108,7 +172,13 @@
     </section>
 
     <!-- Feature 2 -->
-    <section class="feature flip" data-seg="#8ee6b8" data-name="Captions" style="--tint:#8ee6b8; --tint2:#28c840">
+    <section class="feature flip" data-scroll data-seg="#8ee6b8" data-name="Captions" style="--tint:#8ee6b8; --tint2:#28c840">
+      <div class="bg" aria-hidden="true">
+        <span class="px cue" style="--x:3%;--y:4%;--d:1.1">12<br>00:00:12,400 --&gt; 00:00:14,100<br>it finally runs</span>
+        <span class="px cue hide-sm" style="--x:80%;--y:90%;--d:.7">15<br>00:00:19,400 --&gt; 00:00:21,800<br>okay, that's the build</span>
+        <span class="px sliver" style="--x:62%;--y:3%;--d:1.4"></span>
+        <span class="px sliver hide-sm" style="--x:6%;--y:93%;--d:.6"></span>
+      </div>
       <div class="feature-text" data-scroll>
         <h2>Captions, transcribed <span class="c-capt">on your PC.</span></h2>
         <p>Whisper runs locally, so your audio never leaves your machine.</p>
@@ -120,15 +190,20 @@
         <p class="fine">A decent graphics card is recommended for the larger models.</p>
       </div>
       <figure class="loop-card" data-scroll>
-        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/captions.jpg" aria-label="Clicking Generate captions; the model loads, transcription runs, and captions appear on the timeline.">
-          <source src="assets/loops/captions.mp4" type="video/mp4">
-        </video>
+        <div class="float" data-tilt>
+          <video class="loop" muted loop playsinline preload="none" poster="assets/loops/captions.jpg" aria-label="Clicking Generate captions; the model loads, transcription runs, and captions appear on the timeline.">
+            <source src="assets/loops/captions.mp4" type="video/mp4">
+          </video>
+        </div>
       </figure>
     </section>
 
     <!-- 4a. Scene: black-box the private bit, then decorate -->
-    <section class="scene pin" id="frames" data-scroll="pin" data-seg="#febc2e" data-name="Frames">
+    <section class="scene pin" id="frames" data-scroll="pin" data-seg="#febc2e" data-name="Frames" style="--tc:#febc2e">
       <div class="stage">
+        <div class="bg" aria-hidden="true">
+          <span class="bg-word" data-glow><span>FRAMES</span><span class="glow">FRAMES</span></span>
+        </div>
         <p class="visually-hidden">Black-box anything private. Then add a title or a sticker.</p>
         <div class="redact" aria-hidden="true">
           <span class="title-pop">Devlog #7: it finally runs</span>
@@ -143,10 +218,16 @@
     </section>
 
     <!-- Feature 3 -->
-    <section class="feature" data-seg="#febc2e" data-name="Text &amp; images" style="--tint:#febc2e; --tint2:#ff9d2e">
+    <section class="feature" data-scroll data-seg="#febc2e" data-name="Text &amp; images" style="--tint:#febc2e; --tint2:#ff9d2e">
+      <div class="bg" aria-hidden="true">
+        <span class="px fr" style="--x:3%;--y:6%;--d:1.2;--fw:130px;--fh:76px"><i></i><i></i><i></i><i></i></span>
+        <span class="px bb hide-sm" style="--x:84%;--y:4%;--d:.8;--fw:140px;--fh:30px"></span>
+        <span class="px fr hide-sm" style="--x:88%;--y:88%;--d:1.5;--fw:150px;--fh:60px"><i></i><i></i><i></i><i></i></span>
+        <img class="px mini-sticker" src="assets/sticker.svg" alt="" style="--x:4%;--y:88%;--d:.7">
+      </div>
       <div class="feature-text" data-scroll>
         <h2>Text and <span class="c-frame">images.</span></h2>
-        <p>Drop an image onto the preview, or draw a frame and type. Titles, stickers, labels — plus black boxes for anything private.</p>
+        <p>Drop an image onto the preview, or draw a frame and type. Titles, stickers, labels - plus black boxes for anything private.</p>
         <ul class="chips">
           <li style="--c:#febc2e">Draw a frame, type</li>
           <li style="--c:#febc2e">Drag in any image</li>
@@ -154,15 +235,20 @@
         </ul>
       </div>
       <figure class="loop-card" data-scroll>
-        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/text-images.jpg" aria-label="Drawing a black box over a private folder path, then adding a title and dropping a sticker image onto the preview.">
-          <source src="assets/loops/text-images.mp4" type="video/mp4">
-        </video>
+        <div class="float" data-tilt>
+          <video class="loop" muted loop playsinline preload="none" poster="assets/loops/text-images.jpg" aria-label="Drawing a black box over a private folder path, then adding a title and dropping a sticker image onto the preview.">
+            <source src="assets/loops/text-images.mp4" type="video/mp4">
+          </video>
+        </div>
       </figure>
     </section>
 
     <!-- 5a. Scene: the AI lands ten edits, then you tweak -->
-    <section class="scene pin tall" id="ai" data-scroll="pin" data-seg="#2df98b" data-name="AI first cut">
+    <section class="scene pin tall" id="ai" data-scroll="pin" data-seg="#2df98b" data-name="AI first cut" style="--tc:#2df98b">
       <div class="stage">
+        <div class="bg" aria-hidden="true">
+          <span class="bg-word" data-glow><span>FIRST CUT</span><span class="glow">FIRST CUT</span></span>
+        </div>
         <p class="ai-head" data-ai-head>Describe the edit.</p>
         <div class="ai-prompt" aria-hidden="true">
           <span class="ai-dot"></span>
@@ -203,7 +289,13 @@
     </section>
 
     <!-- Feature 4 -->
-    <section class="feature flip" data-seg="#2df98b" data-name="AI first cut" style="--tint:#17d4ea; --tint2:#2df98b">
+    <section class="feature flip" data-scroll data-seg="#2df98b" data-name="AI first cut" style="--tint:#17d4ea; --tint2:#2df98b">
+      <div class="bg" aria-hidden="true">
+        <svg class="px graph" style="--x:2%;--y:2%;--d:.6" viewBox="0 0 300 220"><path d="M20 30 C 120 30, 120 120, 220 120 M20 30 C 90 110, 150 190, 270 190 M220 120 L 270 190"/><circle cx="20" cy="30" r="6"/><circle cx="220" cy="120" r="5"/><circle cx="270" cy="190" r="5"/></svg>
+        <span class="px tchip cut" style="--x:90%;--y:7%;--d:1.3">CUT</span>
+        <span class="px tchip speed hide-sm" style="--x:5%;--y:91%;--d:1">8×</span>
+        <svg class="px graph hide-sm" style="--x:80%;--y:78%;--d:1.2" viewBox="0 0 300 220"><path d="M30 190 C 120 190, 140 60, 260 40 M30 190 C 110 140, 160 140, 200 110 M200 110 L 260 40"/><circle cx="30" cy="190" r="6"/><circle cx="200" cy="110" r="5"/><circle cx="260" cy="40" r="5"/></svg>
+      </div>
       <div class="feature-text" data-scroll>
         <h2>Let your AI make <span class="c-grad">the first cut.</span></h2>
         <p>ClipChop works with any MCP client. Describe the edit, and cuts, speed-ups, boxes and captions land on your timeline live. Then fine-tune by hand and render.</p>
@@ -213,15 +305,20 @@
         </ul>
       </div>
       <figure class="loop-card" data-scroll>
-        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/mcp-tweak-render.jpg" aria-label="An AI assistant adds cuts, timelapses, black boxes and captions to the timeline; the user stretches a cut, moves a box and renders.">
-          <source src="assets/loops/mcp-tweak-render.mp4" type="video/mp4">
-        </video>
+        <div class="float" data-tilt>
+          <video class="loop" muted loop playsinline preload="none" poster="assets/loops/mcp-tweak-render.jpg" aria-label="An AI assistant adds cuts, timelapses, black boxes and captions to the timeline; the user stretches a cut, moves a box and renders.">
+            <source src="assets/loops/mcp-tweak-render.mp4" type="video/mp4">
+          </video>
+        </div>
       </figure>
     </section>
 
     <!-- 6a. Scene: render progress driven by scroll -->
-    <section class="scene pin" id="render" data-scroll="pin" data-seg="#f5f5f5" data-name="Render">
+    <section class="scene pin" id="render" data-scroll="pin" data-seg="#f5f5f5" data-name="Render" style="--tc:#2df98b">
       <div class="stage">
+        <div class="bg" aria-hidden="true">
+          <span class="bg-word" data-glow><span>RENDER</span><span class="glow">RENDER</span></span>
+        </div>
         <p class="render-pct" aria-hidden="true"><span data-render-pct>0</span>%</p>
         <div class="render-bar" aria-hidden="true"><i></i></div>
         <p class="scene-sub" data-render-status aria-hidden="true">Rendering</p>
@@ -229,7 +326,13 @@
     </section>
 
     <!-- Feature 5 -->
-    <section class="feature" data-seg="#f5f5f5" data-name="Render" style="--tint:#f5f5f5; --tint2:#7d7d7d">
+    <section class="feature" data-scroll data-seg="#f5f5f5" data-name="Render" style="--tint:#f5f5f5; --tint2:#7d7d7d">
+      <div class="bg" aria-hidden="true">
+        <span class="px tiles" style="--x:3%;--y:3%;--d:1.1;--fw:180px;--fh:110px"></span>
+        <span class="px spec" style="--x:86%;--y:8%;--d:1.4">H.264</span>
+        <span class="px spec hide-sm" style="--x:5%;--y:93%;--d:.8">1920×1080</span>
+        <span class="px spec hide-sm" style="--x:82%;--y:93%;--d:1.2">60 fps</span>
+      </div>
       <div class="feature-text" data-scroll>
         <h2>One-click render.</h2>
         <p>No export maze. ClipChop matches your footage's resolution and frame rate and picks the fastest encoder your PC has.</p>
@@ -240,9 +343,11 @@
         </ul>
       </div>
       <figure class="loop-card" data-scroll>
-        <video class="loop" muted loop playsinline preload="none" poster="assets/loops/render.jpg" aria-label="Clicking Render; a progress bar fills and the finished MP4 is ready.">
-          <source src="assets/loops/render.mp4" type="video/mp4">
-        </video>
+        <div class="float" data-tilt>
+          <video class="loop" muted loop playsinline preload="none" poster="assets/loops/render.jpg" aria-label="Clicking Render; a progress bar fills and the finished MP4 is ready.">
+            <source src="assets/loops/render.mp4" type="video/mp4">
+          </video>
+        </div>
       </figure>
     </section>
 
@@ -251,8 +356,8 @@
       <div class="note-inner">
         <div class="avatar" aria-hidden="true"><img src="assets/clipchop-appicon.png" alt=""></div>
         <h2>Why I made this.</h2>
-        <p class="reveal" data-scroll data-reveal>[Placeholder — your personal note goes here, 80 to 150 words. Say who you are, why you built ClipChop, and what kind of videos you made with it. Keep it plain and first-person. This paragraph lights up word by word as the visitor scrolls, so short sentences read best.]</p>
-        <p class="sig">— Your name</p>
+        <p class="reveal" data-scroll data-reveal>[Placeholder - your personal note goes here, 80 to 150 words. Say who you are, why you built ClipChop, and what kind of videos you made with it. Keep it plain and first-person. This paragraph lights up word by word as the visitor scrolls, so short sentences read best.]</p>
+        <p class="sig">- Your name</p>
       </div>
     </section>
 
@@ -311,6 +416,7 @@
     <span class="tc dim">00:53:21</span>
   </nav>
 
+  <script src="vendor/lenis.min.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
