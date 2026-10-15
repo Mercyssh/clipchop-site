@@ -1,6 +1,6 @@
 CLIPCHOP — THIRD-PARTY NOTICES
 
-ClipChop 1.0.2 includes the third-party software listed below. Each part
+ClipChop 1.0.3 includes the third-party software listed below. Each part
 is licensed by its own authors under the license shown. ClipChop's own license
 (the EULA) does not apply to these parts and does not limit your rights under
 their licenses.
